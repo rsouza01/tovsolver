@@ -26,7 +26,8 @@ use types
     !! \param pressure_bar
     !! \return
     !!
-    double precision function interpolation_pressure_from_eos(eos_element, rho_bar)
+    double precision function interpolation_pressure_from_eos(parameters, eos_element, rho_bar)
+        type(ConfigParameters) :: parameters
         type(EquationOfStateValue), pointer :: eos_element
         double precision :: rho_bar
         double precision :: delta_x_bar
@@ -59,8 +60,9 @@ use types
     !! \param pressure_bar
     !! \return
     !!
-    double precision function interpolation_baryonic_density_from_eos(eos_element, rho_bar)
-        type(EquationOfStateValue), pointer :: eos_element
+    double precision function interpolation_baryonic_density_from_eos(parameters, eos_element, rho_bar)
+		type(ConfigParameters) :: parameters
+		type(EquationOfStateValue), pointer :: eos_element
         double precision :: rho_bar
         double precision :: delta_x_bar
 
@@ -77,7 +79,7 @@ use types
 
 		else if(parameters%INTERPOLATION_METHOD == IDX_LINEAR) then
 
-			interpolation_pressure_from_eos = isv%a*(rho_bar - eos_element%rho_bar) + isv%b
+			interpolation_baryonic_density_from_eos = isv%a*(rho_bar - eos_element%rho_bar) + isv%b
 
 		end if
 
@@ -117,7 +119,7 @@ use types
 
         end do
 
-        bar_density_bar = interpolation_baryonic_density_from_eos(eos_value, dimless_rho)
+        bar_density_bar = interpolation_baryonic_density_from_eos(parameters, eos_value, dimless_rho)
 
         barionic_density_from_eos_table = bar_density_bar
 
@@ -152,7 +154,7 @@ use types
 
         end do
 
-        pressure_bar = interpolation_pressure_from_eos (eos_value, dimless_rho)
+        pressure_bar = interpolation_pressure_from_eos (parameters, eos_value, dimless_rho)
 
         pressure_from_eos_table = pressure_bar
 
@@ -612,7 +614,8 @@ use types
     !! \param pressure_bar
     !! \return
     !!
-    double precision function interpolation_rho_from_eos(eos_element, pressure_bar)
+    double precision function interpolation_rho_from_eos(parameters, eos_element, pressure_bar)
+        type(ConfigParameters) :: parameters
         type(EquationOfStateValue), pointer :: eos_element
         double precision :: pressure_bar
         double precision :: delta_x_bar
@@ -632,7 +635,7 @@ use types
 
 		else if(parameters%INTERPOLATION_METHOD == IDX_LINEAR) then
 
-			interpolation_pressure_from_eos = isv%a*(pressure_bar - eos_element%pressure_bar) + isv%b
+			rho_bar = isv%a*(pressure_bar - eos_element%pressure_bar) + isv%b
 
 		end if
 
@@ -692,7 +695,7 @@ use types
 
             end do
 
-            rho_bar = interpolation_rho_from_eos (eos_value, dimless_pressure)
+            rho_bar = interpolation_rho_from_eos (parameters, eos_value, dimless_pressure)
 
             !write (*,*) '(pressure_bar, rho_bar) = (', dimless_pressure, ', ', rho_bar, ')'
         end if
