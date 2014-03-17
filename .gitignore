@@ -1,0 +1,10 @@
+# Object files
+*.o
+*.mod
+
+
+# Output dir
+output/
+
+#outputs
+*.eps
