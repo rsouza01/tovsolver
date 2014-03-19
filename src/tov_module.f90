@@ -91,21 +91,21 @@ use stat_module
         !    V(IDX_MASS_BAR), ' ,', V(IDX_PRESSURE_BAR), ' ,', V(IDX_ENERGY_DENSITY_BAR), ' ,', &
         !    V(IDX_RADIUS_BAR), ' ,', V(IDX_RHO_BAR), ')'
 
-        V(IDX_RADIUS_BAR) = t
+        V(IDX_RADIUS_BAR) = t;
 
-        V(IDX_PRESSURE_BAR) = Y(IDX_EQN_DP_DN)
+        V(IDX_PRESSURE_BAR) = Y(IDX_EQN_DP_DN);
 
-        V(IDX_ENERGY_DENSITY_BAR) = energy_density_from_eos(parameters, t, Y, V)
+        V(IDX_ENERGY_DENSITY_BAR) = energy_density_from_eos(parameters, t, Y, V);
 
-        V(IDX_RHO_BAR) = V(IDX_ENERGY_DENSITY_BAR)
+        V(IDX_RHO_BAR) = V(IDX_ENERGY_DENSITY_BAR);
 
-        V(IDX_MASS_BAR) = Y(IDX_EQN_DM_DN)
+        V(IDX_MASS_BAR) = Y(IDX_EQN_DM_DN);
 
-        V(IDX_INFOR_ENTROPY) = V(IDX_INFOR_ENTROPY) + calc_infor_entropy(parameters, t, Y, V)
-        V(IDX_DISEQUILIBRIUM) = V(IDX_DISEQUILIBRIUM) + calc_infor_disequilibrium(parameters, t, Y, V)
+        V(IDX_INFOR_ENTROPY) = V(IDX_INFOR_ENTROPY) + calc_infor_entropy(parameters, t, Y, V);
+        V(IDX_DISEQUILIBRIUM) = V(IDX_DISEQUILIBRIUM) + calc_infor_disequilibrium(parameters, t, Y, V);
 
         if (parameters%eos_file_provides_baryonic_density) then
-            V(IDX_BARYON_NUMBER) = V(IDX_BARYON_NUMBER) + calc_baryon_number(parameters, t, Y, V)
+            V(IDX_BARYON_NUMBER) = V(IDX_BARYON_NUMBER) + calc_baryon_number(parameters, t, Y, V);
         end if
 
 
@@ -134,18 +134,18 @@ use stat_module
 
 		select case (equationNumber)
 			case (IDX_EQN_DM_DN)
-				  returnValue = dM_dn(parameters, t, Y, V)
+				  returnValue = dM_dn(parameters, t, Y, V);
 
 			case (IDX_EQN_DP_DN)
 
                     if (parameters%RHO_0 <= parameters%cutoff_RHO_0) then
-                        returnValue = dP_dN_Newtonian(parameters, t, Y, V)
+                        returnValue = dP_dN_Newtonian(parameters, t, Y, V);
                     else
-                        returnValue = dP_dn_Relativistic(parameters, t, Y, V)
+                        returnValue = dP_dn_Relativistic(parameters, t, Y, V);
                     end if
 
 			case default
-				returnValue = 0.
+				returnValue = 0.;
 
 		end select
 
@@ -166,9 +166,14 @@ use stat_module
         double precision :: Y(N_DIFF_EQUATIONS)
         double precision :: V(N_VARIABLES)
 
+		double precision :: energy_density_bar
+
         !write (*,*) '(t, energy density) = (', t, ', ', V(IDX_ENERGY_DENSITY_BAR), ')'
 
-        dM_dn = V(IDX_ENERGY_DENSITY_BAR) * t**2.
+        !V(IDX_ENERGY_DENSITY_BAR) = energy_density_from_eos(parameters, t, Y, V)
+        energy_density_bar = energy_density_from_eos(parameters, t, Y, V);
+
+        dM_dn = energy_density_bar * t**2.
 
     end function dM_dn
 
@@ -189,18 +194,24 @@ use stat_module
 
 		double precision :: numerator, denominator
 
+		double precision :: energy_density_bar
+		double precision :: pressure_bar
+
+        energy_density_bar = energy_density_from_eos(parameters, t, Y, V);
+		pressure_bar = Y(IDX_PRESSURE_BAR);
+
         !write (*,*) &
         !    '(t, MASS, PRESSURE, ENERGY, RADIUS, RHO) = (', t, ', ', &
         !    V(IDX_MASS_BAR), ' ,', V(IDX_PRESSURE_BAR), ' ,', V(IDX_ENERGY_DENSITY_BAR), ' ,', &
         !    V(IDX_RADIUS_BAR), ' ,', V(IDX_RHO_BAR), ')'
 
-		numerator = - (V(IDX_ENERGY_DENSITY_BAR) + V(IDX_PRESSURE_BAR))*(V(IDX_PRESSURE_BAR)*(t**3.) + V(IDX_MASS_BAR))
+		numerator = - (energy_density_bar + pressure_bar)*(pressure_bar*(t**3.) + V(IDX_MASS_BAR));
 
-        denominator = (t**2.) * (1. - 2. * V(IDX_MASS_BAR) / t)
+        denominator = (t**2.) * (1. - 2. * V(IDX_MASS_BAR) / t);
 
         !write (*,*) '(t, numerator, denominator)', t, ', ', numerator, ', ', denominator, ')'
 
-        dP_dn_Relativistic = numerator / denominator
+        dP_dn_Relativistic = numerator / denominator;
 	end function dP_dn_Relativistic
 
 	!---------------------------------------------------------------------------
@@ -217,7 +228,7 @@ use stat_module
         dP_dn_Newtonian = - (V(IDX_MASS_BAR) * V(IDX_ENERGY_DENSITY_BAR) / (t **2.))
 	end function dP_dn_Newtonian
 
-    !> \brief Function that decides wheter the program must stop.
+    !> \brief Function that decides whether the program must stop.
     !!
     !! \param parameters
     !! \param t
@@ -232,7 +243,10 @@ use stat_module
 		double precision :: Y(N_DIFF_EQUATIONS)
 		double precision :: V(N_VARIABLES)
 
-        can_stop = (V(IDX_PRESSURE_BAR) <= 0.0 .OR. V(IDX_ENERGY_DENSITY_BAR) <= 0.0)
+        !can_stop = (V(IDX_PRESSURE_BAR) <= 0.0 .OR. V(IDX_ENERGY_DENSITY_BAR) <= 0.0);
+        can_stop = (V(IDX_ENERGY_DENSITY_BAR) <= parameters%cutoff_density_bar .OR. &
+			V(IDX_PRESSURE_BAR) <= 0.0);
+
         !can_stop = .false.
 
 	end function can_stop

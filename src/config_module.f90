@@ -167,6 +167,9 @@ use linked_list_module
                     case ('cutoff_RHO_0=')
                         read(buffer, *, iostat=ios) parameters%cutoff_RHO_0
 
+                    case ('cutoff_density=')
+                        read(buffer, *, iostat=ios) parameters%cutoff_density
+
                     case ('K_entropy=')
                         read(buffer, *, iostat=ios) parameters%K_entropy
 
@@ -229,6 +232,11 @@ use linked_list_module
         parameters%ENERGY_DENSITY_0 = parameters%RHO_ADIM * LIGHT_SPEED(parameters%UNIT_SYSTEM)**2.
 
         parameters%BARYONIC_DENSITY_0_bar = barionic_density_from_eos_table(parameters, parameters%RHO_0 / parameters%RHO_ADIM);
+
+		parameters%cutoff_density_bar = parameters%cutoff_density / parameters%RHO_ADIM;
+
+		!DEBUG
+		!write (*,*) 'rho, pressure, baryon_density => ', rho, ', ', pressure, ' ,', baryon_density
 
         parameters%P_0_bar = pressure_from_eos_table(parameters, parameters%RHO_0 / parameters%RHO_ADIM);
 

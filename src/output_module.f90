@@ -167,6 +167,7 @@ use global_constants
         write (*,'(A, e10.5)') '# RHO_0 : ', parameters%RHO_0
         write (*,'(A, e10.5)') '# RHO_ADIM : ', parameters%RHO_ADIM
         write (*,'(A, e10.5)') '# cutoff_RHO_0 : ', parameters%cutoff_RHO_0
+        write (*,'(A, e10.5)') '# cutoff_density : ', parameters%cutoff_density
 
         write (*,'(A, e10.5)') '# P_0 : ', parameters%P_0;
 

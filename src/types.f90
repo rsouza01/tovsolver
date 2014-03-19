@@ -69,6 +69,9 @@ use global_constants
 		character(len=50) :: eos_file_name
 
         double precision :: cutoff_RHO_0 = 0.0
+        double precision :: cutoff_density = 0.0
+        double precision :: cutoff_density_bar = 0.0
+
         double precision :: RHO_0 = 0.0
         double precision :: RHO_ADIM = 0.0
         double precision :: P_0 = 0.0
