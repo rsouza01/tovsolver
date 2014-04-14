@@ -2,7 +2,7 @@
 ! IAG USP
 !-----------------------------------------------------------------------
 !
-! MODULE: utl
+! MODULE: util
 !
 !> @author
 !> Rodrigo Souza
@@ -16,10 +16,14 @@ use global_constants
 
 	implicit none
 
-
-
     contains
 
+    !> \brief Evaluates the logarithm of 'argument' to the given 'base', calculated as log(x)/log(base).
+    !!
+    !! \param argument
+    !! \param base
+    !! \return the logarithm
+    !!
 	double precision function log_n(argument, base)
     implicit none
         double precision :: argument

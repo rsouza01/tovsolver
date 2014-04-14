@@ -2,7 +2,7 @@
 ! IAG USP
 !-----------------------------------------------------------------------
 !
-! MODULE: npe_module
+! MODULE: solver_module
 !
 !> @author
 !> Rodrigo Souza

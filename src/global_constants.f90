@@ -8,7 +8,7 @@
 !> Rodrigo Souza
 !
 ! DESCRIPTION:
-!> Math constants not defined in the language
+!> Math and physical constants not defined in the language
 !
 !-----------------------------------------------------------------------
 module global_constants

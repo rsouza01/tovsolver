@@ -8,7 +8,7 @@
 !> Rodrigo Souza
 !
 ! DESCRIPTION:
-!> Configuration related routines
+!> Function prototypes
 !
 !-----------------------------------------------------------------------
 module prototypes

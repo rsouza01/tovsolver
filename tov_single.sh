@@ -1,4 +1,27 @@
 #!/bin/bash
+#
+#
+# tov_single.sh - Executes the TOV solver for a single central density.
+#
+# Author: 	Rodrigo Alvares de Souza
+#			rsouza01@gmail.com
+#
+#
+# History:
+# Version 0.4: 2014/04/05 (rsouza) - improving legibility, 
+#									adding coments, etc.
+#
+
+#Command line arguments
+case $1 in
+
+-V | --version)
+	echo -n $(basename "$0")
+	grep '^# Version ' "$0" | tail -1 | cut -d : -f 1 | tr -d \#
+	exit 0
+	;;
+	
+esac
 
 _rho_0=2.42704e-09
 
@@ -12,8 +35,7 @@ echo " "
 if [ ! -f tov_parameters.sh ]
 then
 	echo " "
-	echo "#Arquivo de parâmetros 'tov_parameters.sh' não encontrado."
-	echo "#Crie o arquivo e execute este script novamente."
+	echo "#Parameters file 'tov_parameters.sh' not found."
 	echo " "
 	exit -1
 fi
@@ -21,23 +43,23 @@ fi
 
 source tov_parameters.sh
 
-echo "#Arquivo de EoS: '${_EOS_FILE_NAME}''."
-echo "#Arquivo de configuração do lote: '${_CONFIG_FILE}'."
-echo "#Diretório de output: '${_OUTPUT_DIR}'."
+echo "#EoS file: '${_EOS_FILE_NAME}''."
+echo "#Batch configuration file: '${_CONFIG_FILE}'."
+echo "#Output directory: '${_OUTPUT_DIR}'."
 echo " "
 
-#Testo se o arquivo da EoS existe...
+#Does the EoS file exist?
 
 if [ ! -f $_EOS_FILE_NAME ]
 then
-	echo "#Arquivo da EoS '${_EOS_FILE_NAME}' não encontrado."
+	echo "#EoS file '${_EOS_FILE_NAME}' not found."
 	echo " "
 	exit -1
 fi
 
-#Testo se o diretório de saída existe. Se não, ele é criado.
+#Does the output dir exist?
 if [ ! -d "$_OUTPUT_DIR" ]; then
-	echo "#Diretório '${_OUTPUT_DIR}' não existe, criando..."
+	echo "#Directory  '${_OUTPUT_DIR}' not found, creating..."
 	mkdir $_OUTPUT_DIR
 	echo " "
 fi
@@ -51,4 +73,4 @@ echo $commandLine
 eval $commandLine
 		
 
-echo "Processamento concluído."
+echo "Processing done."

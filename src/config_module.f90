@@ -236,7 +236,9 @@ use linked_list_module
 		parameters%cutoff_density_bar = parameters%cutoff_density / parameters%RHO_ADIM;
 
 		!DEBUG
-		!write (*,*) 'rho, pressure, baryon_density => ', rho, ', ', pressure, ' ,', baryon_density
+		!write (*,*) 'parameters%RHO_ADIM => ', parameters%RHO_ADIM
+		!write (*,*) 'cutoff_density => ', parameters%cutoff_density
+		!write (*,*) 'cutoff_density_bar => ', parameters%cutoff_density_bar
 
         parameters%P_0_bar = pressure_from_eos_table(parameters, parameters%RHO_0 / parameters%RHO_ADIM);
 

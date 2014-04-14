@@ -8,7 +8,7 @@
 !> Rodrigo Souza
 !
 ! DESCRIPTION:
-!> Configuration related routines
+!> Interpolation related routines
 !
 !-----------------------------------------------------------------------
 module cubic_spline_module

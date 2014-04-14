@@ -2,13 +2,13 @@
 ! IAG USP
 !-----------------------------------------------------------------------
 !
-! MODULE: prototypes
+! MODULE: types
 !
 !> @author
 !> Rodrigo Souza
 !
 ! DESCRIPTION:
-!> Configuration related routines
+!> Types used all over the souce code.
 !
 !-----------------------------------------------------------------------
 module types

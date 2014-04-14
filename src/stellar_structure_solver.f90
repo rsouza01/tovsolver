@@ -2,20 +2,16 @@
 ! IAG USP
 !-----------------------------------------------------------------------
 !
-! MODULE: npe_ruffini_solver
+! PROGRAM: TOV_Solver
+!
+! MODULE:  stellar_structure_solver
 !
 !> @author
 !> Rodrigo Souza
 !
 ! DESCRIPTION:
-!> Solve equilibrium equations for a npe system
+!> Implements a generic framework for a TOV system.
 !
-!gfortran -o build/npe_ruffini_solver.o -c -g src/npe_ruffini_solver.f90
-!gfortran -o build/solver_module.o -c -g src/solver_module.f90
-!gfortran -o build/global_constants.o -c -g src/global_constants.f90
-!gfortran -o build/types_module.o -c -g src/types_module.f90
-!gfortran -o build/runge_kutta4_module.o -c -g src/runge_kutta4_module.f90
-!gfortran -o build/config_module.o -c -g src/config_module.f90
 !
 !-----------------------------------------------------------------------
 program stellar_structure_solver

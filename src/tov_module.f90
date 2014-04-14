@@ -8,7 +8,7 @@
 !> Rodrigo Souza
 !
 ! DESCRIPTION:
-!> Runge Kutta related types and functions
+!> TOV related types and functions (EDO's and stuff)
 !
 !-----------------------------------------------------------------------
 module tov_module
@@ -244,10 +244,13 @@ use stat_module
 		double precision :: V(N_VARIABLES)
 
         !can_stop = (V(IDX_PRESSURE_BAR) <= 0.0 .OR. V(IDX_ENERGY_DENSITY_BAR) <= 0.0);
-        can_stop = (V(IDX_ENERGY_DENSITY_BAR) <= parameters%cutoff_density_bar .OR. &
+        can_stop = (V(IDX_RHO_BAR) <= parameters%cutoff_density_bar .OR. &
 			V(IDX_PRESSURE_BAR) <= 0.0);
 
-        !can_stop = .false.
+		!DEBUG
+		!write (*,*) 'cutoff_density_bar, V(IDX_RHO_BAR) => ', parameters%cutoff_density_bar, &
+		!	',', V(IDX_RHO_BAR)
+
 
 	end function can_stop
 
