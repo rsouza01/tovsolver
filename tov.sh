@@ -2,10 +2,10 @@
 #
 #
 # tov.sh - Executes the TOV solver for a batch of central
-#					densities, found in the EoS file.
+#               densities, found in the EoS file.
 #
 # Author: 	Rodrigo Alvares de Souza
-# 			rsouza01@gmail.com
+# 		rsouza01@gmail.com
 #
 #
 # History:
@@ -16,6 +16,7 @@
 # MODEL RELATED PARAMETERS SHOULD BE ENTERED VIA COMMAND LINE PARAMETERS.
 
 # IN PRINCIPLE, THESE PARAMETERS DO NOT NEED TO BE CHANGED.
+
 _CONFIG_FILE="./tov_solver.conf"
 _OUTPUT_DIR="./output/"
 _EXECUTABLE="./bin/Debug/FORTRAN_TOV_Solver"
@@ -100,38 +101,39 @@ done < "${_CONFIG_FILE}"
 
 echo " "
 echo " "
-echo '#******************************************************'
-echo '#***********   TOV Solver Shell Script  ***************'
-echo '#******************************************************'
-echo '#******************************************************'
+echo "__________________________________________________________________________________________________________"
+echo " "
+echo '---------------------------------------   TOV Solver Shell Script  ---------------------------------------'
+echo " "
+echo "__________________________________________________________________________________________________________"
 
 # Replaces the INTERNAL FIELD SEPARATOR, but storing a copy first
 OLD_IFS=$IFS
 IFS=', '
 
-echo "#EoS file: '${_EOS_FILE_NAME}''."
-echo "#Batch config file: '${_CONFIG_FILE}'."
-echo "#Output folder: '${_OUTPUT_DIR}'."
-echo " "
+echo "EoS file: '${_EOS_FILE_NAME}''."
+echo "Batch config file: '${_CONFIG_FILE}'."
+echo "Output folder: '${_OUTPUT_DIR}'."
+echo "__________________________________________________________________________________________________________"
+
 
 # Does the EoS file exist?
 
 if [ ! -f $_EOS_FILE_NAME ]
 then
-	echo "#EoS file '${_EOS_FILE_NAME}' not found."
+	echo "EoS file '${_EOS_FILE_NAME}' not found."
 	echo " "
 	exit -1
 fi
 
 # Does the output dir exist?
 if [ ! -d "$_OUTPUT_DIR" ]; then
-	echo "#Folder '${_OUTPUT_DIR}' not found, creating..."
+	echo "Folder '${_OUTPUT_DIR}' not found, creating..."
 	mkdir $_OUTPUT_DIR
 	echo " "
 fi
 
-
-echo '#******************************************************'
+echo "__________________________________________________________________________________________________________"
 
 declare -i secondsProcessing=0
 
