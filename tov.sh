@@ -55,7 +55,7 @@ OPTIONS:
   -V, --version         Show program version and exits
 "
 
-VERSION=$(grep '^# Version ' "$0" | tail -1 | cut -d : -f 1 | tr -d \#)
+_VERSION=$(grep '^# Version ' "$0" | tail -1 | cut -d : -f 1 | tr -d \#)
 
 #Command line arguments
 while test -n "$1"
@@ -84,7 +84,7 @@ do
 
 		-V | --version)
 			echo -n $(basename "$0")
-                        echo " ${VERSION}"
+                        echo " ${_VERSION}"
 			exit 0
 		;;
 
@@ -122,7 +122,7 @@ while read LINE; do
 done < "${_CONFIG_FILE}"
 
 printlncolor "\n\n__________________________________________________________________________________________________________"
-printlncolor "---------------------------------  TOV Solver Shell Script ${VERSION} ----------------------------------"
+printlncolor "---------------------------------  TOV Solver Shell Script ${_VERSION} ----------------------------------"
 printlncolor "__________________________________________________________________________________________________________"
 
 # Replaces the INTERNAL FIELD SEPARATOR, but storing a copy first
@@ -183,6 +183,12 @@ while read line; do
                 #Please do not execute this script as a root.
                 eval $commandLine
 
+		if [ $? -ne 0 ]; then
+                        print2stringslncolorERROR "Return status: " "ERROR!"
+		else
+                        print2stringslncolor "Return status: " "OK!"
+		fi
+
 		endProcessing=`date +%s%N | cut -b1-13`
 
 		secondsProcessing=endProcessing-beginProcessing
@@ -190,12 +196,6 @@ while read line; do
 		echo "Processing time: $secondsProcessing ms."
 
 		#Return code == 0 ? 'GREAT SUCCESS!!' : 'NAUGHTY, NAUGHTY!'
-		if [ $? -ne 0 ]; then
-                        print2stringslncolorERROR "Return status: " "ERROR!"
-		else
-                        print2stringslncolor "Return status: " "OK!"
-		fi
-
 
 		echo "__________________________________________________________________________________________________________"
 	fi
