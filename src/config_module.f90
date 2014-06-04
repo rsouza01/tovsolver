@@ -1,6 +1,10 @@
 !-----------------------------------------------------------------------
-! IAG USP
-!-----------------------------------------------------------------------
+!
+! RAdS Jan12.
+! Copyright (C) 2011-2014 by Rodrigoo Alvares de Souza.
+! Mail: <rsouza01@gmail.com>. Web: "http://www.astro.iag.usp.br/~rsouza/".
+! This program may be copied and/or distributed freely. See the
+! _ terms and conditions in the files in the doc/ subdirectory.
 !
 ! MODULE: config_module
 !
@@ -11,6 +15,8 @@
 !> Configuration related routines
 !
 !-----------------------------------------------------------------------
+
+
 module config_module
 use global_constants
 use types
@@ -29,8 +35,8 @@ use linked_list_module
 	subroutine get_command_line_parameters(cl_parameters, error)
 		implicit none
 
-		type(CommandLineParameters) :: cl_parameters
-		integer :: error
+		type(CommandLineParameters), intent(out) :: cl_parameters
+		integer , intent(out):: error
 		integer :: countArgs
 		character(len=32) :: argument
 		logical :: has_config_file= .false.

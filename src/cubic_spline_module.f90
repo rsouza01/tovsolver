@@ -1,6 +1,11 @@
 !-----------------------------------------------------------------------
-! IAG USP
-!-----------------------------------------------------------------------
+!
+! RAdS Jan12.
+! Copyright (C) 2011-2014 by Rodrigoo Alvares de Souza.
+! Mail: <rsouza01@gmail.com>. Web: "http://www.astro.iag.usp.br/~rsouza/".
+! This program may be copied and/or distributed freely. See the
+! _ terms and conditions in the files in the doc/ subdirectory.
+!
 !
 ! MODULE: cubic_spline_module
 !
