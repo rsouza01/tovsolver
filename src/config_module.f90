@@ -36,7 +36,7 @@ use linked_list_module
 		implicit none
 
 		type(CommandLineParameters), intent(out) :: cl_parameters
-		integer , intent(out):: error
+		integer, intent(out):: error
 		integer :: countArgs
 		character(len=32) :: argument
 		logical :: has_config_file= .false.
@@ -83,9 +83,9 @@ use linked_list_module
 	subroutine print_init(cl_parameters, parameters, error)
 		implicit none
 
-		type(ConfigParameters) :: parameters
-		type(CommandLineParameters) :: cl_parameters
-		integer :: error
+		type(ConfigParameters), intent(in) :: parameters
+		type(CommandLineParameters), intent(in) :: cl_parameters
+		integer, intent(out) :: error
 
 		call print_config(cl_parameters, parameters)
 
@@ -102,9 +102,9 @@ use linked_list_module
 	subroutine read_config(cl_parameters, parameters, error)
 		implicit none
 
-		type(CommandLineParameters) :: cl_parameters
-		type(ConfigParameters) :: parameters
-		integer :: error
+		type(CommandLineParameters), intent(in) :: cl_parameters
+		type(ConfigParameters), intent(out) :: parameters
+		integer, intent(out) :: error
 
 		! Input related variables
 		character(len=100) :: buffer, label, interpolation_method
@@ -261,8 +261,8 @@ use linked_list_module
     subroutine load_eos_table(cl_parameters, parameters)
         implicit none
 
-        type(CommandLineParameters) :: cl_parameters
-        type(ConfigParameters) :: parameters
+        type(CommandLineParameters), intent(in) :: cl_parameters
+        type(ConfigParameters), intent(out) :: parameters
 
         ! Input related variables
         character(len=50) :: eosFileName
@@ -397,18 +397,6 @@ use linked_list_module
 
     end subroutine load_eos_table
 
-
-    subroutine insert_node_into_eos_table(eos_element, cl_parameters, parameters)
-        implicit none
-        Type(EquationOfStateValue), pointer :: eos_element
-        type(CommandLineParameters) :: cl_parameters
-        type(ConfigParameters) :: parameters
-
-
-
-    end subroutine
-
-
     !> \brief Free the memory allocated
     !!
     !! \param cl_parameters
@@ -416,8 +404,8 @@ use linked_list_module
     !!
     subroutine unload_eos_table(cl_parameters, parameters)
         implicit none
-        type(CommandLineParameters) :: cl_parameters
-        type(ConfigParameters) :: parameters
+        type(CommandLineParameters), intent(in) :: cl_parameters
+        type(ConfigParameters), intent(in) :: parameters
 
         Type(EquationOfStateValue), pointer :: eos_element, temp_element
 
