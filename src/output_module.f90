@@ -1,7 +1,7 @@
 !-----------------------------------------------------------------------
 !
 ! RAdS Jan12.
-! Copyright (C) 2011-2014 by Rodrigoo Alvares de Souza.
+! Copyright (C) 2011-2014 by Rodrigo Alvares de Souza.
 ! Mail: <rsouza01@gmail.com>. Web: "http://www.astro.iag.usp.br/~rsouza/".
 ! This program may be copied and/or distributed freely. See the
 ! _ terms and conditions in the files in the doc/ subdirectory.
@@ -32,9 +32,9 @@ use global_constants
     !! \param V
     !!
 	subroutine print_header_output(parameters, t, V)
-		type(ConfigParameters) :: parameters
-		double precision :: t
-		double precision :: V(N_VARIABLES)
+		type(ConfigParameters), intent(in) :: parameters
+		double precision, intent(in) :: t
+		double precision, intent(in) :: V(N_VARIABLES)
 
 		write (*,'(A)') '#---------------------------------------------------------------------------------------------'
 		write (*,'(A)') '#                                 PROFILES'
@@ -70,9 +70,9 @@ use global_constants
     !! \param V
     !!
 	subroutine print_formated_output(parameters, t, V)
-		type(ConfigParameters) :: parameters
-		double precision :: t
-		double precision :: V(N_VARIABLES)
+		type(ConfigParameters), intent(in) :: parameters
+		double precision, intent(in) :: t
+		double precision, intent(in) :: V(N_VARIABLES)
 
 		double precision :: radius
 
@@ -196,6 +196,8 @@ use global_constants
         write (*,'(A, e10.5)') '# SCALE_RADIUS : ', parameters%scale_radius
         write (*,'(A, e10.5)') '# SCALE_MASS : ', parameters%scale_mass
 
+
+        write (*,'(A, e10.5)') '# log_base_calc_infor_entropy : ', parameters%log_base_calc_infor_entropy
         write (*,'(A, e10.5)') '# K_entropy : ', parameters%K_entropy
 
         if(parameters%verbose_eos .eqv. .true.) then

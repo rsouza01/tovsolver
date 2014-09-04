@@ -1,7 +1,7 @@
 !-----------------------------------------------------------------------
 !
 ! RAdS Jan12.
-! Copyright (C) 2011-2014 by Rodrigoo Alvares de Souza.
+! Copyright (C) 2011-2014 by Rodrigo Alvares de Souza.
 ! Mail: <rsouza01@gmail.com>. Web: "http://www.astro.iag.usp.br/~rsouza/".
 ! This program may be copied and/or distributed freely. See the
 ! _ terms and conditions in the files in the doc/ subdirectory.
@@ -35,7 +35,7 @@ use linked_list_module
 	subroutine get_command_line_parameters(cl_parameters, error)
 		implicit none
 
-		type(CommandLineParameters), intent(out) :: cl_parameters
+		type(CommandLineParameters) :: cl_parameters
 		integer, intent(out):: error
 		integer :: countArgs
 		character(len=32) :: argument
@@ -51,20 +51,21 @@ use linked_list_module
             !write (*,'(A)') 'Using default config file = tov_solver.conf'
 
 		!else
-			do countArgs = 1, iargc()
-				call getarg(countArgs, argument)
+		do countArgs = 1, iargc()
 
-                if (argument(1:7) == '-config') then
+			call getarg(countArgs, argument)
 
-                    cl_parameters%parameter_file = argument(9:)
-                    has_config_file = .true.
+			if (argument(1:7) == '-config') then
 
-                else if (argument(1:6) == '-rho_0') then
+				cl_parameters%parameter_file = argument(9:)
+				has_config_file = .true.
 
-                    read(argument(8:),*) cl_parameters%RHO_0
+			else if (argument(1:6) == '-rho_0') then
 
-                end if
-			end do
+				read(argument(8:),*) cl_parameters%RHO_0
+
+			end if
+		end do
 		!end if
 
         if(has_config_file .eqv. .false. ) then
@@ -102,8 +103,8 @@ use linked_list_module
 	subroutine read_config(cl_parameters, parameters, error)
 		implicit none
 
-		type(CommandLineParameters), intent(in) :: cl_parameters
-		type(ConfigParameters), intent(out) :: parameters
+		type(CommandLineParameters) :: cl_parameters
+		type(ConfigParameters) :: parameters
 		integer, intent(out) :: error
 
 		! Input related variables
@@ -154,6 +155,7 @@ use linked_list_module
 					   read(buffer, *, iostat=ios) parameters%verbose_interpolation_coeficients
 
                     case ('RHO_0=')
+
                         if (parameters%RHO_0 <= 0.0) then
                             read(buffer, *, iostat=ios) parameters%RHO_0
                         end if
@@ -187,6 +189,10 @@ use linked_list_module
 
 					case ('eos_file_provides_baryonic_density=')
 					   read(buffer, *, iostat=ios) parameters%eos_file_provides_baryonic_density
+
+					case ('log_base_calc_infor_entropy=')
+					   read(buffer, *, iostat=ios) parameters%log_base_calc_infor_entropy
+
 
 				end select
 
@@ -262,7 +268,7 @@ use linked_list_module
         implicit none
 
         type(CommandLineParameters), intent(in) :: cl_parameters
-        type(ConfigParameters), intent(out) :: parameters
+        type(ConfigParameters), intent(inout) :: parameters
 
         ! Input related variables
         character(len=50) :: eosFileName
@@ -293,7 +299,7 @@ use linked_list_module
 
             if (ios == 0) then
 
-                if (buffer(1:1) /= "#" .and. buffer(1:1) /= "") then
+                if_sharp : if (buffer(1:1) /= "#" .and. buffer(1:1) /= "") then
 
                     ! Find the first instance of ','.  Split pressure and rho.
                     pos_1 = scan(buffer, ',')
@@ -388,7 +394,7 @@ use linked_list_module
 
                     eos_element => eos_element%next_element
 
-                end if !if (buffer(1:1) /= "#") then...
+                end if if_sharp !if (buffer(1:1) /= "#") then...
             end if ! if (ios == 0) then...
 
         end do

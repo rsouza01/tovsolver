@@ -1,7 +1,7 @@
 !-----------------------------------------------------------------------
 !
 ! RAdS Jan12.
-! Copyright (C) 2011-2014 by Rodrigoo Alvares de Souza.
+! Copyright (C) 2011-2014 by Rodrigo Alvares de Souza.
 ! Mail: <rsouza01@gmail.com>. Web: "http://www.astro.iag.usp.br/~rsouza/".
 ! This program may be copied and/or distributed freely. See the
 ! _ terms and conditions in the files in the doc/ subdirectory.
@@ -32,9 +32,10 @@ use types
     !! \return
     !!
     double precision function interpolation_pressure_from_eos(parameters, eos_element, rho_bar)
-        type(ConfigParameters) :: parameters
-        type(EquationOfStateValue), pointer :: eos_element
-        double precision :: rho_bar
+        type(ConfigParameters), intent(in) :: parameters
+        type(EquationOfStateValue), pointer, intent(in) :: eos_element
+        double precision, intent(in) :: rho_bar
+
         double precision :: delta_x_bar
 
         type(InterpolationStepValue), pointer :: isv
@@ -66,9 +67,9 @@ use types
     !! \return
     !!
     double precision function interpolation_baryonic_density_from_eos(parameters, eos_element, rho_bar)
-		type(ConfigParameters) :: parameters
-		type(EquationOfStateValue), pointer :: eos_element
-        double precision :: rho_bar
+		type(ConfigParameters), intent(in) :: parameters
+		type(EquationOfStateValue), pointer, intent(in) :: eos_element
+        double precision, intent(in) :: rho_bar
         double precision :: delta_x_bar
 
         type(InterpolationStepValue), pointer :: isv
@@ -100,8 +101,8 @@ use types
     !---------------------------------------------------------------------------
     double precision function barionic_density_from_eos_table(parameters, dimless_rho)
     implicit none
-        type(ConfigParameters) :: parameters
-        double precision :: dimless_rho
+        type(ConfigParameters), intent(in) :: parameters
+        double precision, intent(in) :: dimless_rho
 
         type(EquationOfStateValue), pointer :: eos_value
         double precision :: bar_density_bar
@@ -139,8 +140,8 @@ use types
     !---------------------------------------------------------------------------
     double precision function pressure_from_eos_table(parameters, dimless_rho)
     implicit none
-        type(ConfigParameters) :: parameters
-        double precision :: dimless_rho
+        type(ConfigParameters), intent(in) :: parameters
+        double precision, intent(in) :: dimless_rho
 
         type(EquationOfStateValue), pointer :: eos_value
         double precision :: pressure_bar
@@ -168,7 +169,7 @@ use types
    !---------------------------------------------------------------------------
     double precision function cs_h(current, next)
     implicit none
-    type(InterpolationStepValue):: current, next
+    type(InterpolationStepValue), intent(in) :: current, next
 
         cs_h = next%x - current%x
 
@@ -177,7 +178,7 @@ use types
    !---------------------------------------------------------------------------
     double precision function linear_a(x1, y1, x2, y2)
     implicit none
-    double precision :: x1, x2, y1, y2;
+    double precision, intent(in) :: x1, x2, y1, y2;
 
         linear_a = (y2 - y1)/(x2 - x1);
 
@@ -186,7 +187,7 @@ use types
    !---------------------------------------------------------------------------
     double precision function linear_b(x1, y1, x2, y2)
     implicit none
-    double precision :: x1, x2, y1, y2;
+    double precision, intent(in) :: x1, x2, y1, y2;
 
         linear_b = y1
 
@@ -195,7 +196,7 @@ use types
    !---------------------------------------------------------------------------
     double precision function cs_alpha(previous, current, next)
     implicit none
-    type(InterpolationStepValue):: previous, current, next
+    type(InterpolationStepValue), intent(in) :: previous, current, next
     double precision :: alpha
 
         if(current%h /= 0. .and. previous%h /= 0.) then
@@ -213,7 +214,7 @@ use types
    !---------------------------------------------------------------------------
     double precision function cs_l(previous, next)
     implicit none
-    type(InterpolationStepValue):: previous, next
+    type(InterpolationStepValue), intent(in) :: previous, next
 
             cs_l = 2. * (next%x - previous%x) - previous%h * previous%mu;
 
@@ -222,7 +223,7 @@ use types
    !---------------------------------------------------------------------------
     double precision function cs_mu(current)
     implicit none
-    type(InterpolationStepValue):: current
+    type(InterpolationStepValue), intent(in) :: current
 
         if(current%h /= 0.) then
             cs_mu = current%h - current%l;
@@ -235,7 +236,7 @@ use types
    !---------------------------------------------------------------------------
     double precision function cs_z(previous, current)
     implicit none
-    type(InterpolationStepValue):: previous, current
+    type(InterpolationStepValue), intent(in) :: previous, current
 
         if(current%h /= 0.) then
             cs_z = (current%alpha - previous%h * previous%z)/current%l;
@@ -248,7 +249,7 @@ use types
    !---------------------------------------------------------------------------
     double precision function cs_coeficient_c(current, next)
     implicit none
-    type(InterpolationStepValue):: current, next
+    type(InterpolationStepValue), intent(in) :: current, next
 
         if(current%h /= 0.) then
             cs_coeficient_c = current%z - current%mu * next%c;
@@ -261,7 +262,7 @@ use types
    !---------------------------------------------------------------------------
     double precision function cs_coeficient_b(current, next)
     implicit none
-    type(InterpolationStepValue):: current, next
+    type(InterpolationStepValue), intent(in) :: current, next
 
         if(current%h /= .0) then
 
@@ -275,7 +276,7 @@ use types
    !---------------------------------------------------------------------------
     double precision function cs_coeficient_d(current, next)
     implicit none
-    type(InterpolationStepValue):: current, next
+    type(InterpolationStepValue), intent(in) :: current, next
 
         if(current%h /= 0.) then
             cs_coeficient_d = (next%c - current%c) / (3. * current%h)
@@ -290,8 +291,8 @@ use types
     !---------------------------------------------------------------------------
     subroutine generate_interpolation_values(cl_parameters, parameters)
         implicit none
-		type(CommandLineParameters) :: cl_parameters
-        type(ConfigParameters) :: parameters
+		type(CommandLineParameters), intent(in) :: cl_parameters
+        type(ConfigParameters), intent(in) :: parameters
 
 		if(parameters%INTERPOLATION_METHOD == IDX_CUBIC_SPLINE) then
 
@@ -313,8 +314,8 @@ use types
     subroutine generate_cubic_spline_interpolation_values(cl_parameters, parameters)
         implicit none
 
-        type(CommandLineParameters) :: cl_parameters
-        type(ConfigParameters) :: parameters
+        type(CommandLineParameters), intent(in) :: cl_parameters
+        type(ConfigParameters), intent(in) :: parameters
 
         Type(EquationOfStateValue), pointer :: eos_element
 
@@ -521,8 +522,8 @@ use types
     subroutine generate_linear_interpolation_values(cl_parameters, parameters)
         implicit none
 
-        type(CommandLineParameters) :: cl_parameters
-        type(ConfigParameters) :: parameters
+        type(CommandLineParameters), intent(in) :: cl_parameters
+        type(ConfigParameters), intent(in) :: parameters
 
         Type(EquationOfStateValue), pointer :: eos_element
 
@@ -577,10 +578,10 @@ use types
     !!
     double precision function energy_density_from_eos(parameters, t, Y, V)
     implicit none
-        type(ConfigParameters) :: parameters
-        double precision :: t
-        double precision :: Y(N_DIFF_EQUATIONS)
-        double precision :: V(N_VARIABLES)
+        type(ConfigParameters), intent(in) :: parameters
+        double precision, intent(in) :: t
+        double precision, intent(in) :: Y(N_DIFF_EQUATIONS)
+        double precision, intent(in) :: V(N_VARIABLES)
 
 
         !double precision :: BAG_CONSTANT = 9.23D+034
@@ -620,9 +621,10 @@ use types
     !! \return
     !!
     double precision function interpolation_rho_from_eos(parameters, eos_element, pressure_bar)
-        type(ConfigParameters) :: parameters
-        type(EquationOfStateValue), pointer :: eos_element
-        double precision :: pressure_bar
+        type(ConfigParameters), intent(in) :: parameters
+        type(EquationOfStateValue), pointer, intent(in) :: eos_element
+        double precision, intent(in) :: pressure_bar
+
         double precision :: delta_x_bar
 
         type(InterpolationStepValue), pointer :: isv
@@ -658,8 +660,8 @@ use types
     !---------------------------------------------------------------------------
     double precision function density_from_eos_table(parameters, dimless_pressure)
     implicit none
-        type(ConfigParameters) :: parameters
-        double precision :: dimless_pressure
+        type(ConfigParameters), intent(in) :: parameters
+        double precision, intent(in) :: dimless_pressure
 
         double precision :: rho_bar
 

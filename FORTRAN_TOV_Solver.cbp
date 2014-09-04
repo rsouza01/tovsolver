@@ -11,6 +11,7 @@
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gfortran" />
+				<Option parameters="-config=tov_solver.conf" />
 				<Compiler>
 					<Add option="-g" />
 				</Compiler>
@@ -20,7 +21,7 @@
 				<Option object_output="obj/Release/" />
 				<Option type="1" />
 				<Option compiler="gfortran" />
-				<Option parameters="-config=config_tov.ini" />
+				<Option parameters="tov_solver.conf" />
 				<Compiler>
 					<Add option="-O2" />
 				</Compiler>
