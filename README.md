@@ -1,4 +1,4 @@
-TOV Solver
+TOV Solver (tovsolver)
 ==============
 
 Purpose
