@@ -36,11 +36,11 @@ use global_constants
         double precision, intent(in) :: t
         double precision, intent(in) :: V(N_VARIABLES)
 
-        write (*,'(A)') '#---------------------------------------------------------------------------------------------'
+        write (*,'(A)') '#-----------------------------------------------------------------------------------------------'
         write (*,'(A)') '#                                 PROFILES'
-        write (*,'(A)') '#---------------------------------------------------------------------------------------------'
-        write (*,'(A)') '#              t            mass_bar             rho_bar               P_bar'
-        write (*,'(A)') '#--------------- ------------------- ------------------- -------------------'
+        write (*,'(A)') '#-----------------------------------------------------------------------------------------------'
+        write (*,'(A)') '#              t            mass_bar             rho_bar               P_bar                   c'
+        write (*,'(A)') '#--------------- ------------------- ------------------- ------------------- -------------------'
 
 
     end subroutine print_header_output
@@ -56,9 +56,9 @@ use global_constants
         double precision :: t
         double precision :: V(N_VARIABLES)
 
-        write (*,'(A)') '#--------------- ------------------- ------------------- -------------------'
-        write (*,'(A)') '#              t            mass_bar             rho_bar               P_bar'
-        write (*,'(A)') '#---------------------------------------------------------------------------'
+        write (*,'(A)') '#-----------------------------------------------------------------------------------------------'
+        write (*,'(A)') '#              t            mass_bar             rho_bar               P_bar                   c'
+        write (*,'(A)') '#--------------- ------------------- ------------------- ------------------- -------------------'
 
 
     end subroutine print_footer_output
@@ -76,14 +76,15 @@ use global_constants
 
         double precision :: radius
 
-        character(len=50) :: eosData_Line       = "(A, F15.5, E20.10, E20.10, E20.10)"
+        character(len=50) :: eosData_Line       = "(A, F15.5, E20.10, E20.10, E20.10, E20.10)"
 
         radius = t
 
         write (*, eosData_Line) ' ', t, &
                 V(IDX_MASS_BAR), &
                 V(IDX_RHO_BAR),  &
-                V(IDX_PRESSURE_BAR)
+                V(IDX_PRESSURE_BAR), &
+                V(IDX_SPEED_OF_SOUND)
 
         !write (*,*) '(t, mass, density, pressure) = (', t, ', ', V(IDX_MASS_BAR),', ', &
         !    V(IDX_RHO_BAR),', ', V(IDX_PRESSURE_BAR), ')'

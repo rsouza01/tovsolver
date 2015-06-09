@@ -109,6 +109,10 @@ use stat_module
         V(IDX_INFOR_ENTROPY) = V(IDX_INFOR_ENTROPY) + calc_infor_entropy(parameters, t, Y, V);
         V(IDX_DISEQUILIBRIUM) = V(IDX_DISEQUILIBRIUM) + calc_infor_disequilibrium(parameters, t, Y, V);
 
+        V(IDX_SPEED_OF_SOUND) = SQRT((parameters%P_0 * V(IDX_PRESSURE_BAR))/ &
+            (parameters%ENERGY_DENSITY_0 * V(IDX_RHO_BAR))) * &
+            LIGHT_SPEED_SCALE(parameters%UNIT_SYSTEM)
+
         if (parameters%eos_file_provides_baryonic_density) then
             V(IDX_BARYON_NUMBER) = V(IDX_BARYON_NUMBER) + calc_baryon_number(parameters, t, Y, V);
         end if

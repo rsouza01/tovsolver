@@ -28,7 +28,7 @@ module global_constants
 
 
     !INDEXES
-    integer, parameter :: N_VARIABLES = 8
+    integer, parameter :: N_VARIABLES = 9
 
     integer, parameter :: IDX_MASS_BAR = 1
     integer, parameter :: IDX_PRESSURE_BAR = 2
@@ -38,6 +38,7 @@ module global_constants
     integer, parameter :: IDX_BARYON_NUMBER = 6
     integer, parameter :: IDX_INFOR_ENTROPY = 7
     integer, parameter :: IDX_DISEQUILIBRIUM = 8
+    integer, parameter :: IDX_SPEED_OF_SOUND = 9
 
 
     double precision, public, parameter :: const_pi = 355./113.
