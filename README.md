@@ -17,9 +17,9 @@ Command Line Parameters
 Config File Parameters
 -----------------------
 
-diff_eq_step : TODO
+diff_eq_step : Runge-Kutta step size.
 
-max_rk_steps : TODO
+max_rk_steps : Upper limit to the number of steps the program must iterate.
 
 interpolation_tolerance : TODO
 
@@ -27,17 +27,17 @@ max_diff_eq_step : TODO
 
 min_diff_eq_step : TODO
 
-verbose_eos : TODO
+verbose_eos : If TRUE, the program will output the EoS's values. Otherwise, no output.
 
-output_summary_only : TODO
+output_summary_only : If true, the program wil output the summary, but not the profiles. Use false for optimization.
 
 output_gnuplot_style : TODO
 
-verbose_interpolation_coeficients : TODO
+verbose_interpolation_coeficients : If true, the program will output the interpolation coeficients.
 
-RHO_0 : TODO
+RHO_0 : The central density.
 
-interpolation_method : TODO
+interpolation_method : Two methods are available at the moment: cubic_spline and linear.
 
 RHO_ADIM : TODO
 
@@ -47,11 +47,11 @@ cutoff_density : TODO
 
 K_entropy : TODO
 
-eos_file_name : TODO
+eos_file_name : The EoS file name.
 
-UNIT_SYSTEM : TODO
+UNIT_SYSTEM : CGS=1, NUCLEAR=2, SI=3, NUN=4, OTHER=5.
 
-eos_file_provides_baryonic_density : TODO
+eos_file_provides_baryonic_density : true or false.
 
 log_base_calc_infor_entropy : TODO
 
