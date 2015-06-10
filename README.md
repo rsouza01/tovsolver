@@ -14,13 +14,13 @@ some Equation of State.
 
 ##EOS File format
 
-The file is very simple. It must be formated in 3 columns, in the following order:
+The file is very simple. It must be formated in 3 columns (comma separated), in the following order:
 
 1. Density (mass density, it will be converted internally to energy density, depending on the chosen unit system).
 2. Pressure.
 3. Baryon density, if provided.
 
-The data must be sorted as density descending, i.e. from the bigger mass density to the smaller.
+The data must be sorted as density descending, i.e. from the bigger mass density to the smaller. In the future, one should be abble to inform the data in any sorting.
 
 ##Config File Parameters
 
@@ -62,3 +62,6 @@ The data must be sorted as density descending, i.e. from the bigger mass density
 
 - **log_base_calc_infor_entropy** : TODO
 
+## Usage
+
+It is provided a lot of scripts along the executable. 
