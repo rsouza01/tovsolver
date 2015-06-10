@@ -12,6 +12,16 @@ some Equation of State.
 
 -rho_0 : define the value for central energy density (e(R = 0)).
 
+##EOS File format
+
+The file is very simple. It must be formated in 3 columns, in the following order:
+
+1. Density (mass density, it will be converted internally to energy density, depending on the chosen unit system).
+2. Pressure.
+3. Baryon density, if provided.
+
+The data must be sorted as density descending, i.e. from the bigger mass density to the smaller.
+
 ##Config File Parameters
 
 - **diff_eq_step** : Runge-Kutta step size.
@@ -40,13 +50,13 @@ some Equation of State.
 
 - **cutoff_RHO_0** : TODO
 
-- **cutoff_density** : TODO
+- **cutoff_density** : The density where the program must stop the Runge-Kutta calculations(i.e. a stop condition).
 
 - **K_entropy** : TODO
 
 - **eos_file_name** : The EoS file name.
 
-- **UNIT_SYSTEM** : CGS=1, NUCLEAR=2, SI=3, NUN=4, OTHER=5.
+- **UNIT_SYSTEM** : CGS=1, NUCLEAR=2, SI=3, NUN=4, OTHER=5. You should note that this is not fully implemented. Only CGS and Nuclear units are working up to now.
 
 - **eos_file_provides_baryonic_density** : true or false.
 
