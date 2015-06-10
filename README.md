@@ -64,4 +64,4 @@ The data must be sorted as density descending, i.e. from the bigger mass density
 
 ## Usage
 
-It is provided a lot of scripts along the executable. 
+It is provided a lot of scripts along the executable. Let's see what each one does...
