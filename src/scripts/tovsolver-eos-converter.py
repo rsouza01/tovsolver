@@ -36,7 +36,7 @@ import csv
 _eos_converter_version = 0.1
 _unit_systems = ['cgs', 'nuclear']
 _conversion_factors_CGS_TO_NUC = [5.6096e-13, 6.242e-31, 1e-39]
-_conversion_factors_NUC_TO_CGS = [1, 1, 1]
+_conversion_factors_NUC_TO_CGS = [1.783e12, 1.6022e33, 1e39]
 
 
 _unit_system_from = 0    #CGS by default
@@ -64,10 +64,10 @@ def print_execution_header():
     print ("# EOS unit converter - Vs %.1f" % _eos_converter_version)
     print ("# Eos File : %s" % _eos_file_name)
     print ("# Converting %s -> %s" % (_unit_systems[_unit_system_from], _unit_systems[_unit_system_to]))
-    print ("# DO NOT FORGET TO REMOVE THIS LINES!!!")
+    print ("# DO NOT FORGET TO REMOVE THESE LINES!!!")
     print ("#-----------------------------------------------------\n")
     print ("# Mass density, Pressure, Baryonic density")
-    print ("# Mev/fm^3, Mev/fm^3, fm^-3\n")
+    print ("# Mev/fm^3, Mev/fm^3, fm^-3")
     
     
 
