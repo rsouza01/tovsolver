@@ -26,7 +26,10 @@
         eos-units.py --from unit_to_convert_from --to unit_to_convert_to
         eos-units.py --help
         eos-units.py -h
-    
+
+    Example:
+        ./tovsolver-eos-converter.py -f nuclear -t cgs -e eos.75.NUC.csv > eos.75.CGS.csv 
+
 """
 
 import sys
