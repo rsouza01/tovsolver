@@ -1,34 +1,20 @@
 #!/usr/bin/python
 
 """
-    eos-units.py - Converts the eos file from one unit system to other
+    tovsolver.py - Python version from old tovsover
 
     Author: 	Rodrigo Alvares de Souza
                 rsouza01@gmail.com
 
 
     History:
-    Version 0.1: 2015/07/10     (rsouza) - Creating the file.
-    Version 0.2: 2015/07/23     (rsouza) - Fixed the 2-column problem.
+    Version 0.1: 2015/08/29     (rsouza) - Creating the file.
 
-
-    The file MUST be formated in 3 (or 2) columns, as stated bellow:
-    mass density, pressure, baryonic density (optional).
-    
-    The results will be displayed in the stdout stream. Use redirection to generate
-    a new EoS file.
-
-    TODO: Finish the implementation for Nuclear to CGS convertion...
-    
-    
     Usage:
-        tovsolver-eos-converter.py -f unit_to_convert_from -t unit_to_convert_to > OUTPUT.csv
-        tovsolver-eos-converter.py --from unit_to_convert_from --to unit_to_convert_to > OUTPUT.csv
-        tovsolver-eos-converter.py --help
-        tovsolver-eos-converter.py -h
+        tovsolver.py
 
     Example:
-        ./tovsolver-eos-converter.py -f nuclear -t cgs -e eos.75.NUC.csv > eos.75.CGS.csv 
+        ./tovsolver.py
 
 """
 
