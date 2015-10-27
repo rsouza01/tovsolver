@@ -1,5 +1,3 @@
-#!/usr/bin/python
-
 # tovsolver - Tolman-Ooppenheimer-Volkoff equation solver
 # Copyright (C) 2015 Rodrigo Souza <rsouza01@gmail.com>
 
@@ -19,38 +17,29 @@
 # 02110-1301, USA.
 
 
-"""
-    tovsolver.py - Python version from old tovsover
 
-    History:
-    Version 0.1: 2015/08/29     (rsouza) - Creating the file.
+class TOVEquations:
+    """ TOV equations. """
 
-    Usage:
-        tovsolver.py
+    __INDEX_MASS = 0
+    __INDEX_PRESSURE = 1
 
-    Example:
-        ./tovsolver.py
+    def __init__(self, eos):
 
-"""
+        self.__eos = eos
 
-import sys
-from mainsolver import TOVSolver
-from mainsolver import TOVSolverConfig
+    def fTOV(self, y, eta, params):
 
+        mass = y[self.__INDEX_MASS]
+        pressure = y[self.__INDEX_PRESSURE]
+        energy_density = self.__eos.energy_from_pressure(pressure)
 
-def usage():
-    print(
-        "Usage: \n" +
-        "    tovsolver.py \n")
+        #print("Mass(%f) = %f" % (eta, mass))
+        #print("Energy(%f) = %f" % (eta, energy_density))
+        #print("pressure(%f) = %f" % (eta, pressure))
 
+        f_delta_M_delta_r = eta ** 2. * energy_density
 
-def main(argv):
+        f_delta_P_delta_r = - ((energy_density + pressure) * (pressure * eta**3. + mass)) / (eta ** 2. * (1. - (2. * mass / eta)))
 
-    tovsolverconfig = TOVSolverConfig(central_energy=1396.12)
-    tovsolver = TOVSolver(tovsolverconfig)
-
-    tovsolver.run()
-
-
-if __name__ == "__main__":
-    main(sys.argv[1:])
+        return [f_delta_M_delta_r, f_delta_P_delta_r]
