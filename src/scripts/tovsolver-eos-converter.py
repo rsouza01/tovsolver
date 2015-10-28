@@ -9,12 +9,12 @@
 
     History:
     Version 0.1: 2015/07/10     (rsouza) - Creating the file.
+    Version 0.2: 2015/07/23     (rsouza) - Fixed the 2-column problem.
 
 
-    The file MUST be formated in 3 columns, as stated bellow:
-    mass density, pressure, baryonic density.
+    The file MUST be formated in 3 (or 2) columns, as stated bellow:
+    mass density, pressure, baryonic density (optional).
     
-    Only the first two columns will be converted in this version.
     The results will be displayed in the stdout stream. Use redirection to generate
     a new EoS file.
 
@@ -22,10 +22,10 @@
     
     
     Usage:
-        eos-units.py -f unit_to_convert_from -t unit_to_convert_to
-        eos-units.py --from unit_to_convert_from --to unit_to_convert_to
-        eos-units.py --help
-        eos-units.py -h
+        tovsolver-eos-converter.py -f unit_to_convert_from -t unit_to_convert_to > OUTPUT.csv
+        tovsolver-eos-converter.py --from unit_to_convert_from --to unit_to_convert_to > OUTPUT.csv
+        tovsolver-eos-converter.py --help
+        tovsolver-eos-converter.py -h
 
     Example:
         ./tovsolver-eos-converter.py -f nuclear -t cgs -e eos.75.NUC.csv > eos.75.CGS.csv 
@@ -36,7 +36,7 @@ import sys
 import getopt
 import csv
 
-_eos_converter_version = 0.1
+_eos_converter_version = 0.2
 _unit_systems = ['cgs', 'nuclear']
 _conversion_factors_CGS_TO_NUC = [5.6096e-13, 6.242e-31, 1e-39]
 _conversion_factors_NUC_TO_CGS = [1.783e12, 1.6022e33, 1e39]
@@ -69,8 +69,12 @@ def print_execution_header():
     print ("# Converting %s -> %s" % (_unit_systems[_unit_system_from], _unit_systems[_unit_system_to]))
     print ("# DO NOT FORGET TO REMOVE THESE LINES!!!")
     print ("#-----------------------------------------------------\n")
-    print ("# Mass density, Pressure, Baryonic density")
-    print ("# Mev/fm^3, Mev/fm^3, fm^-3")
+    print ("# Mass density,   Pressure,    Baryonic density")
+    
+    if(_unit_system_to == 0):
+        print ("#     [g/cm^3], [erg/cm^3],             [cm^-3]")
+    elif(_unit_system_to == 1):
+        print ("#   [Mev/fm^3], [Mev/fm^3],             [fm^-3]")
     
     
 
@@ -143,7 +147,11 @@ def process_file(unit_system_from, unit_system_to, eos_file_name):
                 
                 mass_density    = float(row[0])
                 pressure        = float(row[1])
-                baryon_density  = float(row[2])
+                
+                if(len(row) == 3):
+                    baryon_density  = float(row[2])
+                else:
+                    baryon_density  = 1
 
                 if(unit_system_from == 0 and unit_system_to == 1):
                     mass_density, pressure, baryon_density  = \
