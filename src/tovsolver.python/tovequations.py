@@ -1,4 +1,4 @@
-# tovsolver - Tolman-Ooppenheimer-Volkoff equation solver
+# tovsolver - Tolman-Oppenheimer-Volkoff equation solver
 # Copyright (C) 2015 Rodrigo Souza <rsouza01@gmail.com>
 
 # This program is free software; you can redistribute it and/or
@@ -28,18 +28,26 @@ class TOVEquations:
 
         self.__eos = eos
 
-    def fTOV(self, y, eta, params):
+    def delta_M_delta_eta(self, eta, y):
+        mass, pressure = y[0], y[1]
 
-        mass = y[self.__INDEX_MASS]
-        pressure = y[self.__INDEX_PRESSURE]
+        # print("delta_M_delta_r(eta, mass, pressure) = (%f, %e, %e)" % (eta, mass, pressure))
+
         energy_density = self.__eos.energy_from_pressure(pressure)
 
-        #print("Mass(%f) = %f" % (eta, mass))
-        #print("Energy(%f) = %f" % (eta, energy_density))
-        #print("pressure(%f) = %f" % (eta, pressure))
+        # print("delta_M_delta_r(eta, mass, pressure, energy) = (%f, %f, %f, %f)" % (eta, mass, pressure, energy_density))
 
-        f_delta_M_delta_r = eta ** 2. * energy_density
+        return energy_density * eta ** 2.
 
-        f_delta_P_delta_r = - ((energy_density + pressure) * (pressure * eta**3. + mass)) / (eta ** 2. * (1. - (2. * mass / eta)))
+    def delta_P_delta_eta(self, eta, y):
 
-        return [f_delta_M_delta_r, f_delta_P_delta_r]
+        mass, pressure = y[0], y[1]
+
+        # print("delta_P_delta_r(eta, mass, pressure) = (%f, %e, %e)" % (eta, mass, pressure))
+
+        energy_density = self.__eos.energy_from_pressure(pressure)
+
+        # print("delta_M_delta_r(eta, mass, pressure, energy) = (%f, %f, %f, %f)" % (eta, mass, pressure, energy_density))
+
+        return -1*((energy_density + pressure) * (pressure * eta**3. + mass)) / ((eta ** 2.) * (1. - (2. * mass / eta)))
+

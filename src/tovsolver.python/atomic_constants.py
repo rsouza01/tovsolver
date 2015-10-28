@@ -1,5 +1,3 @@
-#!/usr/bin/python
-
 # tovsolver - Tolman-Oppenheimer-Volkoff equation solver
 # Copyright (C) 2015 Rodrigo Souza <rsouza01@gmail.com>
 
@@ -19,38 +17,17 @@
 # 02110-1301, USA.
 
 
-"""
-    tovsolver.py - Python version from old tovsover
+LIGHT_SPEED 			= 1
+GRAVITATIONAL_CONSTANT	= 1
+PLANCK_CONSTANT_H 		= 1
+PLANCK_CONSTANT_H_BAR 	= 1
+BOLTZMANN_CONSTANT 		= 1
 
-    History:
-    Version 0.1: 2015/08/29     (rsouza) - Creating the file.
+SUN_MASS				= 1.12e60  # MeV
+SUN_RADIUS 				= 6.959e23 #fm
 
-    Usage:
-        tovsolver.py
-
-    Example:
-        ./tovsolver.py
-
-"""
-
-import sys
-from mainsolver import TOVSolver
-from mainsolver import TOVSolverConfig
+QUARK_UP_MASS			= 5 #MeV
+QUARK_DOWN_MASS			= 7 #MeV
+QUARK_STRANGE_MASS		= 150 #MeV
 
 
-def usage():
-    print(
-        "Usage: \n" +
-        "    tovsolver.py \n")
-
-
-def main(argv):
-
-    tovsolverconfig = TOVSolverConfig(central_energy=1396.12)
-    tovsolver = TOVSolver(tovsolverconfig)
-
-    tovsolver.run()
-
-
-if __name__ == "__main__":
-    main(sys.argv[1:])

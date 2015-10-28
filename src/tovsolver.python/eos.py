@@ -1,4 +1,4 @@
-# tovsolver - Tolman-Ooppenheimer-Volkoff equation solver
+# tovsolver - Tolman-Oppenheimer-Volkoff equation solver
 # Copyright (C) 2015 Rodrigo Souza <rsouza01@gmail.com>
 
 # This program is free software; you can redistribute it and/or
@@ -43,7 +43,7 @@ class EoSValue(namedtuple('EoSValue', 'energy pressure baryonic_number')):
 class EoS:
 
 
-    def __init__(self, filename, central_energy):
+    def __init__(self, filename, central_energy, verbose=False):
 
         self.__filename = filename
 
@@ -55,16 +55,19 @@ class EoS:
 
         interpolator = EoSInterpolation(loader.getEoSList())
 
-        self.__energy_from_pressure_function = interpolator.interpolate_spline_energy_from_pressure(plotFit=False)
+        self.__energy_from_pressure_function = interpolator.interpolate_spline_energy_from_pressure(plotFit=verbose)
 
-        self.__pressure_from_energy_function = interpolator.interpolate_spline_pressure_from_energy(plotFit=False)
-
+        self.__pressure_from_energy_function = interpolator.interpolate_spline_pressure_from_energy(plotFit=verbose)
 
     def energy_from_pressure(self, pressure):
+
+        # print("energy_from_pressure(%f)" % (pressure))
 
         return self.__energy_from_pressure_function(pressure)
 
     def pressure_from_energy(self, energy):
+
+        # print("pressure_from_energy(%f)" % (energy))
 
         return self.__pressure_from_energy_function(energy)
 
