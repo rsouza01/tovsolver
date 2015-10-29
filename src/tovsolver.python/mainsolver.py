@@ -29,15 +29,16 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-
 class TOVSolverConfig:
     """ Configuration class for TOV equation solving. """
 
-    def __init__(self, central_energy=0.0):
-        self.central_energy = central_energy
+    def __init__(self, central_energy=0.0, eos_file_name="", config_name="tov_solver.conf"):
+        self.__central_energy = central_energy
+        self.__config_name = config_name
+        self.__eos_file_name = eos_file_name
 
-        self.__a = (atmc.LIGHT_SPEED**2./(4. * math.pi * atmc.GRAVITATIONAL_CONSTANT * self.central_energy))**(.5)
-        self.__m_star = 4. * math.pi * self.central_energy * self.__a**3.
+        self.__a = (atmc.LIGHT_SPEED ** 2. / (4. * math.pi * atmc.GRAVITATIONAL_CONSTANT * self.__central_energy)) ** .5
+        self.__m_star = 4. * math.pi * self.__central_energy * self.__a ** 3.
 
     def getRadiusScaleFactor(self):
         return self.__a
@@ -46,7 +47,13 @@ class TOVSolverConfig:
         return self.__m_star
 
     def getCentralEnergy(self):
-        return self.central_energy
+        return self.__central_energy
+
+    def getConfigFileName(self):
+        return self.__config_name
+
+    def getEoSFileName(self):
+        return self.__eos_file_name
 
 
 class TOVSolver:
@@ -56,26 +63,25 @@ class TOVSolver:
     __superior_lim = 3
     __ode_steps = 2000
 
-    def __init__(self):
-        pass
-
-    def __init__(self, tovsolverconfig):
-        self.__config = tovsolverconfig
+    def __init__(self, tov_solver_config):
+        self.__config = tov_solver_config
 
     def run(self):
 
-        print('TOVSolver running...')
+        self.output_header()
 
-        eos = EoS("EoS-OFICIAL-SLy4-tabelada-sem-fit.csv", self.__config.getCentralEnergy(), verbose=False)
+        # TODO: File name must be read from config file.
+        eos = EoS(self.__config.getEoSFileName(),
+                  self.__config.getCentralEnergy(),
+                  verbose=False)
 
         tovEquations = TOVEquations(eos)
 
         # Initial conditions, all values dimensionless.
 
-        energy_0 = 1
-
         mass_0 = 0
-        #pressure_0 = eos.pressure_from_energy(energy_0)
+        # energy_0 = 1
+        # pressure_0 = eos.pressure_from_energy(energy_0)
         pressure_0 = 0.474932
 
         rk_parameters = RungeKuttaParameters(
@@ -84,16 +90,18 @@ class TOVSolver:
             rk_steps=self.__ode_steps,
             functions=[tovEquations.delta_M_delta_eta, tovEquations.delta_P_delta_eta],
             initial_conditions=[mass_0, pressure_0],
-            verbose=True)
+            verbose=False)
 
         rk4 = TOVRungeKutta(rk_parameters)
 
         rk4.run()
 
-        star_mass = rk4.getMass()*self.__config.getMassScaleFactor()/atmc.SUN_MASS
-        star_radius = rk4.getRadius()*self.__config.getRadiusScaleFactor()/atmc.SUN_RADIUS
+        star_mass = rk4.getMass() * self.__config.getMassScaleFactor() / atmc.SUN_MASS
 
-        print("Mass = %e, Radius = %e" % (star_mass, star_radius))
+        # The result is dimensionless. It must be converted to km.
+        star_radius = rk4.getRadius() * self.__config.getRadiusScaleFactor() * 1e-18
+
+        self.output_summary(star_mass, star_radius)
 
         # eta = np.linspace(self.__inferior_lim, self.__superior_lim, self.__ode_steps)
         #
@@ -105,3 +113,42 @@ class TOVSolver:
         #     plt.grid(True)
         #     plt.figure(2)
 
+    def output_header(self):
+
+        header_format = \
+            ("#---------------------------------------------------------------------------------------------\n"
+             "#                     TOV Solver\n"
+             "#---------------------------------------------------------------------------------------------\n"
+             "# Config File     : {}\n"
+             "# EoS File        : {}\n"
+             "# RHO_0 (MeV/fm3) : {}\n"
+             "# P_0             : 0\n"
+             "# SCALE_RADIUS    : 0\n"
+             "# SCALE_MASS      : 0\n"
+             "#---------------------------------------------------------------------------------------------\n")
+
+        print(header_format.format(
+            self.__config.getConfigFileName(),
+            self.__config.getEoSFileName(),
+            self.__config.getCentralEnergy()))
+
+    def output_summary(self, star_mass, star_radius):
+
+        summary_format = \
+            ("#---------------------------------------------------------------------------------------------\n"
+             "#                                            SUMMARY\n"
+             "#---------------------------------------------------------------------------------------------\n"
+             "#\n"
+             "# Star Radius (km)            : {}\n"
+             "#\n"
+             "# Star Mass (Solar Units)     : {}\n"
+             "#\n"
+             "# Baryon Number               :\n"
+             "#\n"
+             "# Information Entropy         :\n"
+             "# Disequilibrium              :\n"
+             "# Complexity                  :\n"
+             "#\n"
+             "#---------------------------------------------------------------------------------------------\n")
+
+        print(summary_format.format(star_radius, star_mass))

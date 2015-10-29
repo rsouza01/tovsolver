@@ -67,13 +67,13 @@ class RungeKutta(object):
         k3 = [0 for x in range(0, m)]
         k4 = [0 for x in range(0, m)]
 
-        print("k1=%s, k2=%s, k3=%s, k4=%s" % (k1, k2, k3, k4))
+        #print("k1=%s, k2=%s, k3=%s, k4=%s" % (k1, k2, k3, k4))
 
-        print("****************************************************\n")
+        #print("****************************************************\n")
 
         ws_k2 = []; ws_k3 = []; ws_k4 = [];
 
-        print(self.__array_t)
+        # print(self.__array_t)
 
         for i in range(1, self.__total_steps):
 
@@ -119,8 +119,7 @@ class RungeKutta(object):
                 print("Stop condition reached.")
                 break
 
-
-            print("****************************************************\n")
+            # print("****************************************************\n")
 
         # TODO: Return interpolated functions.
 
@@ -162,7 +161,3 @@ if __name__ == '__main__':
 
     #rk4.run()
 
-    w = [1,2,3]
-    w = [el + 3 for el in w]
-
-    print(w)

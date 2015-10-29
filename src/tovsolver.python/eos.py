@@ -57,6 +57,7 @@ class EoS:
 
         self.__energy_from_pressure_function = interpolator.interpolate_spline_energy_from_pressure(plotFit=verbose)
 
+        # TODO: There's something wrong here, it returns a function array instead of a function.
         self.__pressure_from_energy_function = interpolator.interpolate_spline_pressure_from_energy(plotFit=verbose)
 
     def energy_from_pressure(self, pressure):
