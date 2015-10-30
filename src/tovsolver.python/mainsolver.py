@@ -37,7 +37,9 @@ class TOVSolverConfig:
         self.__config_name = config_name
         self.__eos_file_name = eos_file_name
 
-        self.__a = (atmc.LIGHT_SPEED ** 2. / (4. * math.pi * atmc.GRAVITATIONAL_CONSTANT * self.__central_energy)) ** .5
+        self.__a = (atmc.LIGHT_SPEED ** 2. /
+                    (4. * math.pi * atmc.GRAVITATIONAL_CONSTANT * self.__central_energy)) ** .5
+
         self.__m_star = 4. * math.pi * self.__central_energy * self.__a ** 3.
 
     def getRadiusScaleFactor(self):
@@ -80,9 +82,8 @@ class TOVSolver:
         # Initial conditions, all values dimensionless.
 
         mass_0 = 0
-        # energy_0 = 1
-        # pressure_0 = eos.pressure_from_energy(energy_0)
-        pressure_0 = 0.474932
+        energy_0 = 1
+        pressure_0 = eos.pressure_from_energy(energy_0)
 
         rk_parameters = RungeKuttaParameters(
             first_element=self.__inferior_lim,
@@ -96,12 +97,14 @@ class TOVSolver:
 
         rk4.run()
 
+
+        # TODO: this part can be improved.
         star_mass = rk4.getMass() * self.__config.getMassScaleFactor() / atmc.SUN_MASS
 
         # The result is dimensionless. It must be converted to km.
         star_radius = rk4.getRadius() * self.__config.getRadiusScaleFactor() * 1e-18
 
-        self.output_summary(star_mass, star_radius)
+        self.output_summary(star_mass, star_radius, 0, 0, 0, 0)
 
         # eta = np.linspace(self.__inferior_lim, self.__superior_lim, self.__ode_steps)
         #
@@ -132,7 +135,8 @@ class TOVSolver:
             self.__config.getEoSFileName(),
             self.__config.getCentralEnergy()))
 
-    def output_summary(self, star_mass, star_radius):
+
+    def output_summary(self, star_mass, star_radius, baryon_number, info_entropy, diseq, complexity):
 
         summary_format = \
             ("#---------------------------------------------------------------------------------------------\n"
@@ -143,12 +147,12 @@ class TOVSolver:
              "#\n"
              "# Star Mass (Solar Units)     : {}\n"
              "#\n"
-             "# Baryon Number               :\n"
+             "# Baryon Number               : {}\n"
              "#\n"
-             "# Information Entropy         :\n"
-             "# Disequilibrium              :\n"
-             "# Complexity                  :\n"
+             "# Information Entropy         : {}\n"
+             "# Disequilibrium              : {}\n"
+             "# Complexity                  : {}\n"
              "#\n"
              "#---------------------------------------------------------------------------------------------\n")
 
-        print(summary_format.format(star_radius, star_mass))
+        print(summary_format.format(star_radius, star_mass, baryon_number, info_entropy, diseq, complexity))

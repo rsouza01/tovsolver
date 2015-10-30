@@ -33,64 +33,23 @@
 
 """
 
-import sys
+
 from mainsolver import TOVSolver
 from mainsolver import TOVSolverConfig
 import sys
-import getopt
+import tovconfig
 
-
-def usage():
-    print(
-        "Usage: \n" +
-        "    tov_solver.py <--config=config_file_name --rho_0=9.9D+9> \n")
-
-def get_cl_parameters(argv):
-    '''
-    Extracts the command line parameters.
-    :param argv:
-    :return:
-    '''
-
-    number_arguments = len(argv)
-
-    if number_arguments == 0:
-        usage()
-        sys.exit(2)
-
-    try:
-        opts, args = getopt.getopt(argv, "hrc:", ["help", "rho_0=", "config="])
-    except getopt.GetoptError as err:
-        print(err)
-        usage()
-        sys.exit(2)
-
-    config_file = "tov_solver.conf"
-    rho_0 = 0.
-
-    for opt, arg in opts:
-
-        if opt in ("-r", "--rho_0"):
-            rho_0 = float(arg)
-
-        elif opt in ("-c", "--config"):
-            config_file = arg
-
-        elif opt == '-h':
-            usage()
-            exit(0)
-        else:
-            assert False, "Unhandled exception."
-
-    return [rho_0, config_file]
 
 def main(argv):
 
-    rho_0, config_name = get_cl_parameters(argv)
+    rho_0, config_name = tovconfig.get_cl_parameters(argv)
+
+    # TODO: this method must be changed to return all other configs.
+    eos_file_name = tovconfig.get_file_name_from_conf(config_name)
 
     tovSolver = TOVSolver(TOVSolverConfig(
         central_energy=rho_0,
-        eos_file_name="EoS-OFICIAL-SLy4-tabelada-sem-fit.csv",
+        eos_file_name=eos_file_name,
         config_name=config_name))
 
     tovSolver.run()
