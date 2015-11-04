@@ -37,6 +37,7 @@ class TOVSolverConfig:
         self.__config_name = config_name
         self.__eos_file_name = eos_file_name
 
+        # TODO: estes dois campos estão errados, precisa revisar.
         self.__a = (atmc.LIGHT_SPEED ** 4. /
                     (4. * math.pi * atmc.GRAVITATIONAL_CONSTANT * self.__central_energy)) ** .5
 
@@ -100,7 +101,9 @@ class TOVSolver:
         # Initial conditions, all values dimensionless.
         mass_0 = 0
         energy_0 = 1
-        pressure_0 = self.__eos.pressure_from_energy(energy_0)
+        pressure_0 = float(self.__eos.pressure_from_energy(energy_0))
+
+        print("pressure_0  = {}".format(pressure_0 ))
 
         self.output_header(self.__config.getConfigFileName(),
                            self.__config.getEoSFileName(),
@@ -189,8 +192,11 @@ class TOVSolver:
              "# EoS File            : {}\n"
              "# EPSILON_0 (MeV/fm3) : {}\n"
              "# PRESSURE_0          : {:05f}\n"
+             "#---------------------------------------------------------------------------------------------\n"
              "# Epsilon             : {:05f}\n"
+             "# Epsilon (admin)     : {:05f}\n"
              "# Pressure            : {:05f}\n"
+             "# Pressure (admin)    : {:05f}\n"
              "#---------------------------------------------------------------------------------------------\n")
 
         print(header_format.format(config_file_name,
@@ -198,4 +204,6 @@ class TOVSolver:
                                    epsilon_0,
                                    pressure_0,
                                    epsilon,
-                                   pressure))
+                                   epsilon/epsilon_0,
+                                   pressure,
+                                   pressure/epsilon_0))

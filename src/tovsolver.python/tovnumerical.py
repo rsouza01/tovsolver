@@ -31,14 +31,13 @@ class TOVRungeKutta(RungeKutta):
     def must_stop(self, eta, ws):
 
         if ws[0] <= 0 or ws[1] <= 0:
-            self.__star_eta = eta
-            self.__star_mass = ws[0]
-
             return True
         else:
             return False
 
     def perform_calculations(self, eta, ws):
+        self.__star_eta = eta
+        self.__star_mass = ws[0]
         pass
 
     def getMass(self):

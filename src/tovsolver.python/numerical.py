@@ -71,9 +71,10 @@ class RungeKutta(object):
         k3 = [0*x for x in range(0, m)]
         k4 = [0*x for x in range(0, m)]
 
-        print("k1=%s, k2=%s, k3=%s, k4=%s" % (k1, k2, k3, k4))
-        print("Type ws_0 = {}".format(type(ws[0])))
-        print("Type ws_1 = {}".format(type(ws[1])))
+        # print("k1=%s, k2=%s, k3=%s, k4=%s" % (k1, k2, k3, k4))
+        # print("Type ws_0 = {}".format(type(ws[0])))
+        # print("Type ws_1 = {}".format(type(ws[1])))
+        # print("h = {}".format(h))
 
         # print("****************************************************\n")
 
@@ -82,51 +83,60 @@ class RungeKutta(object):
         ws_k4 = [0*x for x in range(0, m)]
 
         # print(self.__array_t)
+        try:
+            for i in range(1, self.__total_steps):
 
-        for i in range(1, self.__total_steps):
+                # print(t)
 
-            # print(t)
+                # print("ws = {}".format(str(ws)))
+                # K1
+                for j in range(0, m):
+                    k1[j] = h * self.__derivatives[j](t, ws)
+                # print("k1 = {}".format(str(k1)))
 
-            # K1
-            for j in range(0, m):
-                k1[j] = h * self.__derivatives[j](t, ws)
 
-            # K2
-            for j in range(0, m):
-                ws_k2[j] = ws[j] + 0.5*k1[j]
-            for j in range(0, m):
-                k2[j] = h * self.__derivatives[j](t+0.5*h, ws_k2)
+                # K2
+                for j in range(0, m):
+                    ws_k2[j] = ws[j] + 0.5*k1[j]
+                for j in range(0, m):
+                    k2[j] = h * self.__derivatives[j](t+0.5*h, ws_k2)
+                # print("k2 = {}".format(str(k2)))
 
-            # K3
-            for j in range(0, m):
-                ws_k3[j] = ws[j] + 0.5*k2[j]
-            for j in range(0, m):
-                k3[j] = h * self.__derivatives[j](t+0.5*h, ws_k3)
+                # K3
+                for j in range(0, m):
+                    ws_k3[j] = ws[j] + 0.5*k2[j]
+                for j in range(0, m):
+                    k3[j] = h * self.__derivatives[j](t+0.5*h, ws_k3)
+                # print("k3 = {}".format(str(k3)))
 
-            # K4
-            for j in range(0, m):
-                ws_k4[j] = ws[j] + k3[j]
-            for j in range(0, m):
-                k4[j] = h * self.__derivatives[j](t+h, ws_k4)
+                # K4
+                for j in range(0, m):
+                    ws_k4[j] = ws[j] + k3[j]
+                for j in range(0, m):
+                    k4[j] = h * self.__derivatives[j](t+h, ws_k4)
+                # print("k4 = {}".format(str(k4)))
 
-            for j in range(0, m):
-                ws[j] += (k1[j] + 2.*k2[j] + 2.*k3[j] + k4[j])/6.
+                for j in range(0, m):
+                    ws[j] += (k1[j] + 2.*k2[j] + 2.*k3[j] + k4[j])/6.
+                # print("ws = {}".format(str(ws)))
 
-            t = self.__first_element + i * h
+                t = self.__first_element + i * h
 
-            if self.__verbose:
-                print("(i, t, m, p) = (%d, %f, %e, %e)" % (i, t, ws[0], ws[1]))
+                if self.__verbose:
+                    print("(i, t, m, p) = (%d, %f, %e, %e)" % (i, t, ws[0], ws[1]))
 
-            print("(i, t, m, p) = (%d, %f, %e, %e)" % (i, t, ws[0], ws[1]))
+                # print("(i, t, m, p) = (%d, %f, %e, %e)" % (i, t, ws[0], ws[1]))
 
-            self.perform_calculations(t, ws)
+                self.perform_calculations(t, ws)
 
-            if self.must_stop(t, ws):
-                # print("Stop condition reached.")
-                stop_condition_reached = True
-                break
+                if self.must_stop(t, ws):
+                    # print("Stop condition reached.")
+                    stop_condition_reached = True
+                    break
 
-            # print("****************************************************\n")
+                # print("****************************************************\n")
+        except ValueError:
+            stop_condition_reached = True
 
         # TODO: Return interpolated functions.
 
