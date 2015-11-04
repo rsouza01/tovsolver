@@ -18,6 +18,7 @@
 
 from numerical import RungeKutta
 
+
 class TOVRungeKutta(RungeKutta):
     """ TOV Runge Kutta implementation. """
 
@@ -29,7 +30,7 @@ class TOVRungeKutta(RungeKutta):
 
     def must_stop(self, eta, ws):
 
-        if ws[1] <= 0:
+        if ws[0] <= 0 or ws[1] <= 0:
             self.__star_eta = eta
             self.__star_mass = ws[0]
 

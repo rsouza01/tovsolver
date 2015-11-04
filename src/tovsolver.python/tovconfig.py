@@ -56,7 +56,8 @@ def get_cl_parameters(argv):
         sys.exit(2)
 
     try:
-        opts, args = getopt.getopt(argv, "hrc:", ["help", "rho_0=", "config="])
+        opts, args = getopt.getopt(argv, "hr:c:e:p:",
+                                   ["help", "rho_0=", "config=", "epsilon=", "pressure="])
     except getopt.GetoptError as err:
         print(err)
         usage()
@@ -64,6 +65,8 @@ def get_cl_parameters(argv):
 
     config_file = "tov_solver.conf"
     rho_0 = 0.
+    epsilon = 0
+    pressure = 0
 
     for opt, arg in opts:
 
@@ -73,13 +76,19 @@ def get_cl_parameters(argv):
         elif opt in ("-c", "--config"):
             config_file = arg
 
+        elif opt in ("-e", "--epsilon"):
+            epsilon = float(arg)
+
+        elif opt in ("-p", "--pressure"):
+            pressure = float(arg)
+
         elif opt == '-h':
             usage()
             exit(0)
         else:
             assert False, "Unhandled exception."
 
-    return [rho_0, config_file]
+    return rho_0, config_file, epsilon, pressure
 
 
 def get_file_name_from_conf(config_name):

@@ -42,23 +42,24 @@ class EoSValue(namedtuple('EoSValue', 'energy pressure baryonic_number')):
 
 class EoS:
 
-
-    def __init__(self, filename, central_energy, verbose=False):
+    def __init__(self, filename, central_energy_density, verbose=False):
 
         self.__filename = filename
 
-        self.__central_energy = central_energy
+        self.__central_energy_density = central_energy_density
 
-        loader = EoSLoader(self.__filename, central_energy)
+        loader = EoSLoader(self.__filename, central_energy_density)
 
         loader.loadEoSFile()
 
-        interpolator = EoSInterpolation(loader.getEoSList())
+        interp = EoSInterpolation(loader.getEoSList())
 
-        self.__energy_from_pressure_function = interpolator.interpolate_spline_energy_from_pressure(plotFit=verbose)
+        self.__energy_from_pressure_function = \
+            interp.interpolate_spline_energy_from_pressure(plotFit=verbose)
 
         # TODO: There's something wrong here, it returns a function array instead of a function.
-        self.__pressure_from_energy_function = interpolator.interpolate_spline_pressure_from_energy(plotFit=verbose)
+        self.__pressure_from_energy_function = \
+            interp.interpolate_spline_pressure_from_energy(plotFit=verbose)
 
     def energy_from_pressure(self, pressure):
 
@@ -78,10 +79,10 @@ class EoSLoader:
 
     __eosList = []
 
-    def __init__(self, filename, central_energy=1):
+    def __init__(self, filename, central_energy_density=1):
 
         self.__filename = filename
-        self.__central_energy = central_energy
+        self.__central_energy_density = central_energy_density
 
     def getEoSList(self):
         return self.__eosList
@@ -92,15 +93,17 @@ class EoSLoader:
             reader = csv.reader(f)
             for row in reader:
                 if not row[0].startswith('#'):
-                    eosValue = EoSValue(float(row[ENERGY_INDEX])/self.__central_energy,
-                                        float(row[PRESSURE_INDEX])/self.__central_energy,
+                    eosValue = EoSValue(float(row[ENERGY_INDEX])/self.__central_energy_density,
+                                        float(row[PRESSURE_INDEX])/self.__central_energy_density,
                                         float(row[BARYONIC_NUMBER_INDEX]))
 
                     self.__eosList.append(eosValue)
 
-        #firstColumn = [row[0] for row in self.__eosList]
+        # print(self.__eosList)
 
-        #print(firstColumn)
+        # firstColumn = [row[0] for row in self.__eosList]
+
+        # print(firstColumn)
 
 
 class EoSInterpolation:
@@ -119,30 +122,19 @@ class EoSInterpolation:
         self.__baryonicNumberValues = numpy.asarray(
             [row[BARYONIC_NUMBER_INDEX] for row in self.__eosList],  dtype=numpy.float32)
 
-    def np_interpolate_spline_energy_from_pressure(self, plotFit=False):
-
-        tck = interpolate.splrep(self.__pressureValues, self.__energyValues)
-
-        self.__energyValuesFunction = interpolate.splev(self.__pressureValues, tck)
-
-        if(plotFit):
-            plt.figure()
-            plt.plot(self.__pressureValues, self.__energyValues, 'x', self.__pressureValues, self.__energyValuesFunction)
-            plt.legend(['True', 'Cubic Spline'])
-            plt.show()
-
-        return self.__energyValuesFunction
-
     def interpolate_spline_energy_from_pressure(self, plotFit=False):
 
         fc = interpolate.interp1d(self.__pressureValues[::-1], self.__energyValues[::-1])
 
-        if(plotFit):
+        if plotFit:
             plt.figure()
             plt.plot(self.__pressureValues,
                      fc(self.__pressureValues), 'x',
                      self.__pressureValues, self.__energyValues)
             plt.legend(['True', 'Cubic Spline'])
+            plt.ylabel("Energy")
+            plt.xlabel("Pressure")
+            plt.title("\epsilon(P)")
             plt.show()
 
         return fc
@@ -151,12 +143,15 @@ class EoSInterpolation:
 
         fc = interpolate.interp1d(self.__energyValues[::-1], self.__pressureValues[::-1])
 
-        if(plotFit):
+        if plotFit:
             plt.figure()
             plt.plot(self.__energyValues,
                      fc(self.__energyValues), 'o',
                      self.__energyValues, self.__pressureValues)
             plt.legend(['True', 'Cubic Spline'])
+            plt.xlabel("Energy")
+            plt.ylabel("Pressure")
+            plt.title("P(e)")
             plt.show()
 
         return fc
