@@ -37,11 +37,13 @@ class TOVSolverConfig:
         self.__config_name = config_name
         self.__eos_file_name = eos_file_name
 
-        # TODO: estes dois campos estão errados, precisa revisar.
-        self.__a = (atmc.LIGHT_SPEED ** 4. /
-                    (4. * math.pi * atmc.GRAVITATIONAL_CONSTANT * self.__central_energy)) ** .5
+        self.__central_mass_density = central_energy / atmc.LIGHT_SPEED**2
 
-        self.__m_star = 4. * math.pi * self.__central_energy * self.__a ** 3. / atmc.LIGHT_SPEED ** 2.
+        # TODO: estes dois campos estao errados, precisa revisar.
+        self.__a = (atmc.LIGHT_SPEED**2. /
+                    (4. * math.pi * atmc.GRAVITATIONAL_CONSTANT * self.__central_mass_density)) ** .5
+
+        self.__m_star = 4. * math.pi * self.__central_mass_density * self.__a ** 3.
 
     def getRadiusScaleFactor(self):
         return self.__a
@@ -103,8 +105,6 @@ class TOVSolver:
         energy_0 = 1
         pressure_0 = float(self.__eos.pressure_from_energy(energy_0))
 
-        print("pressure_0  = {}".format(pressure_0 ))
-
         self.output_header(self.__config.getConfigFileName(),
                            self.__config.getEoSFileName(),
                            self.__config.getCentralEnergy(),
@@ -124,12 +124,14 @@ class TOVSolver:
 
         rk4.run()
 
-
         # TODO: this part can be improved.
-        star_mass = rk4.getMass() * self.__config.getMassScaleFactor() / atmc.SUN_MASS
+
+        results = rk4.getResult()
+
+        star_mass = results.mass * self.__config.getMassScaleFactor() / atmc.SUN_MASS
 
         # The result is dimensionless. It must be converted to km.
-        star_radius = rk4.getRadius() * self.__config.getRadiusScaleFactor() * 1e-18
+        star_radius = results.eta * self.__config.getRadiusScaleFactor() * 1e-18
 
         self.output_summary(star_mass, star_radius, 0, 0, 0, 0)
 
@@ -146,15 +148,14 @@ class TOVSolver:
     def output_header(self, config_file_name, eos_file_name, epsilon_0, pressure_0, scale_radius, scale_mass):
         header_format = \
             ("#---------------------------------------------------------------------------------------------\n"
-             "#                     TOV Solver - Solver Mode\n"
+             "#--------------------------------  TOV Solver - Solver Mode  ---------------------------------\n"
              "#---------------------------------------------------------------------------------------------\n"
              "# Config File         : {}\n"
              "# EoS File            : {}\n"
              "# EPSILON_0 (MeV/fm3) : {}\n"
              "# PRESSURE_0          : {:05f}\n"
              "# SCALE_RADIUS        : {:0.05e}\n"
-             "# SCALE_MASS          : {:0.05e}\n"
-             "#---------------------------------------------------------------------------------------------\n")
+             "# SCALE_MASS          : {:0.05e}")
 
         print(header_format.format(config_file_name,
                                    eos_file_name,
@@ -186,7 +187,7 @@ class TOVSolver:
     def output_interpolation_header(self, config_file_name, eos_file_name, epsilon_0, pressure_0, epsilon, pressure):
         header_format = \
             ("#---------------------------------------------------------------------------------------------\n"
-             "#                     TOV Solver - Interpolation Mode\n"
+             "#----------------------------  TOV Solver - Interpolation Mode  ------------------------------\n"
              "#---------------------------------------------------------------------------------------------\n"
              "# Config File         : {}\n"
              "# EoS File            : {}\n"

@@ -17,6 +17,14 @@
 # 02110-1301, USA.
 
 from numerical import RungeKutta
+from collections import namedtuple
+
+
+class TOVRK4Result(namedtuple('TOVRK4Result', 'mass pressure eta')):
+    """
+    Named tuple that represents an EoS value
+    """
+    pass
 
 
 class TOVRungeKutta(RungeKutta):
@@ -27,6 +35,7 @@ class TOVRungeKutta(RungeKutta):
         super(TOVRungeKutta, self).__init__(rk_parameters)
         self.__star_eta = 0
         self.__star_mass = 0
+        self.__star_pressure = 0
 
     def must_stop(self, eta, ws):
 
@@ -38,10 +47,7 @@ class TOVRungeKutta(RungeKutta):
     def perform_calculations(self, eta, ws):
         self.__star_eta = eta
         self.__star_mass = ws[0]
-        pass
+        self.__star_pressure = ws[1]
 
-    def getMass(self):
-        return self.__star_mass
-
-    def getRadius(self):
-        return self.__star_eta
+    def getResult(self):
+        return TOVRK4Result(self.__star_mass, self.__star_pressure, self.__star_eta)
