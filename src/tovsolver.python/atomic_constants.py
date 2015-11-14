@@ -30,7 +30,3 @@ SUN_RADIUS 				= 6.959e23  # fm
 QUARK_UP_MASS			= 5    # MeV
 QUARK_DOWN_MASS			= 7    # MeV
 QUARK_STRANGE_MASS		= 150  # MeV
-
-LAST_EDITED = "CLOUD9"
-
-
