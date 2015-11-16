@@ -92,11 +92,13 @@ def get_cl_parameters(argv):
     return rho_0, config_file, epsilon, pressure
 
 
-def get_file_name_from_conf(config_name):
+def get_parameters_from_conf(config_name):
 
     config = cp.ConfigParser()
     config.read(config_name)
     file_name = config_section_map(config, "Configuration")["eos_file_name"]
 
-    return file_name
+    cutoff_density = float(config_section_map(config, "Configuration")["cutoff_density"])
+
+    return file_name, cutoff_density
 

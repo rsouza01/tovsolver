@@ -16,16 +16,17 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 # 02110-1301, USA.
 
+LENGTH_TO_KM            = 1e-5
 
-LIGHT_SPEED 			= 2.998e23
-GRAVITATIONAL_CONSTANT	= 1.44
+LIGHT_SPEED 			= 2.998e10
+GRAVITATIONAL_CONSTANT	= 6.67259e-8
 
 PLANCK_CONSTANT_H 		= 1
 PLANCK_CONSTANT_H_BAR 	= 1
 BOLTZMANN_CONSTANT 		= 1
 
-SUN_MASS                = 1.12e60   # MeV
-SUN_RADIUS 				= 6.959e23  # fm
+SUN_MASS                = 1.9891e33 # grams
+SUN_RADIUS 				= 6.959e10  # cm
 
 QUARK_UP_MASS			= 5    # MeV
 QUARK_DOWN_MASS			= 7    # MeV

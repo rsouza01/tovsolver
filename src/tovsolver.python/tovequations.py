@@ -28,6 +28,11 @@ class TOVEquations:
 
         self.__eos = eos
 
+    def vector_field(self, w, t, p):
+
+        return [self.delta_M_delta_eta(t, w),
+                self.delta_P_delta_eta(t, w)]
+
     def delta_M_delta_eta(self, eta, y):
         mass, pressure = y[0], y[1]
 
@@ -43,7 +48,7 @@ class TOVEquations:
 
         mass, pressure = y[0], y[1]
 
-        # print("delta_P_delta_r(eta, mass, pressure) = (%f, %e, %e)" % (eta, mass, pressure))
+        print("delta_P_delta_r(eta, mass, pressure) = (%f, %e, %e)" % (eta, mass, pressure))
 
         energy_density = self.__eos.energy_from_pressure(pressure)
 

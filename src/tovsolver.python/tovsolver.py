@@ -42,20 +42,20 @@ import tovconfig
 
 def main(argv):
 
-    epsilon_0, config_name, epsilon, pressure = tovconfig.get_cl_parameters(argv)
+    rho_0, config_name, epsilon, pressure = tovconfig.get_cl_parameters(argv)
 
-    # TODO: this method must be changed to return all other configs.
-    eos_file_name = tovconfig.get_file_name_from_conf(config_name)
+    eos_file_name, cutoff_density = tovconfig.get_parameters_from_conf(config_name)
 
     config = TOVSolverConfig(
-        central_energy=epsilon_0,
+        central_mass_density=rho_0,
         eos_file_name=eos_file_name,
+        cutoff_density=cutoff_density,
         config_name=config_name)
 
     tovSolver = TOVSolver(config)
 
     if epsilon != 0 or pressure != 0:
-            tovSolver.evaluate(epsilon/epsilon_0, pressure/epsilon_0)
+            tovSolver.evaluate(epsilon/rho_0, pressure/rho_0)
     else:
         tovSolver.run()
 

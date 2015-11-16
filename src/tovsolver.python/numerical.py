@@ -57,12 +57,16 @@ class RungeKutta(object):
         """
 
         m = len(self.__derivatives)
+        print("m = {}".format(m))
 
         ws = self.__initial_conditions
+        print("ws = {}".format(ws))
 
         t = self.__first_element
+        print("t = {}".format(t))
 
         h = self.__h
+        print("h = {}".format(h))
 
         stop_condition_reached = False
 
@@ -94,24 +98,23 @@ class RungeKutta(object):
                     k1[j] = h * self.__derivatives[j](t, ws)
                 # print("k1 = {}".format(str(k1)))
 
-
                 # K2
-                for j in range(0, m):
-                    ws_k2[j] = ws[j] + 0.5*k1[j]
+                for k in range(0, m):
+                    ws_k2[k] = ws[k] + 0.5*k1[k]
                 for j in range(0, m):
                     k2[j] = h * self.__derivatives[j](t+0.5*h, ws_k2)
                 # print("k2 = {}".format(str(k2)))
 
                 # K3
-                for j in range(0, m):
-                    ws_k3[j] = ws[j] + 0.5*k2[j]
+                for k in range(0, m):
+                    ws_k3[k] = ws[k] + 0.5*k2[k]
                 for j in range(0, m):
                     k3[j] = h * self.__derivatives[j](t+0.5*h, ws_k3)
                 # print("k3 = {}".format(str(k3)))
 
                 # K4
-                for j in range(0, m):
-                    ws_k4[j] = ws[j] + k3[j]
+                for k in range(0, m):
+                    ws_k4[k] = ws[k] + k3[k]
                 for j in range(0, m):
                     k4[j] = h * self.__derivatives[j](t+h, ws_k4)
                 # print("k4 = {}".format(str(k4)))

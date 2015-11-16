@@ -36,4 +36,4 @@ set style fill pattern 7
 
 set title 'Massa Raio'
 
-plot './output/starStructureOutput.csv' using 3:4  title 'Massa/Raio'
+plot './output/starStructureOutput.csv' using 1:2  title 'Massa/Raio'

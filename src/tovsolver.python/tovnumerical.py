@@ -29,17 +29,20 @@ class TOVRK4Result(namedtuple('TOVRK4Result', 'mass pressure eta')):
 
 class TOVRungeKutta(RungeKutta):
     """ TOV Runge Kutta implementation. """
+    __MASS_INDEX = 0
+    __PRESSURE_INDEX = 1
 
-    def __init__(self, rk_parameters):
+    def __init__(self, rk_parameters, cutoff_density_bar=0.0):
 
         super(TOVRungeKutta, self).__init__(rk_parameters)
         self.__star_eta = 0
         self.__star_mass = 0
         self.__star_pressure = 0
+        self.__cutoff_density_bar = cutoff_density_bar
 
     def must_stop(self, eta, ws):
 
-        if ws[0] <= 0 or ws[1] <= 0:
+        if ws[self.__MASS_INDEX] <= self.__cutoff_density_bar or ws[self.__PRESSURE_INDEX] <= 0:
             return True
         else:
             return False

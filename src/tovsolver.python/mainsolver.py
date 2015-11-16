@@ -21,10 +21,11 @@ from eos import EoS
 from tovequations import TOVEquations
 from numerical import RungeKuttaParameters
 from tovnumerical import TOVRungeKutta
-import atomic_constants as atmc
+import cgs_constants as const
 import math
 
 import numpy as np
+import scipy.integrate as integrate
 
 import matplotlib.pyplot as plt
 
@@ -32,18 +33,25 @@ import matplotlib.pyplot as plt
 class TOVSolverConfig:
     """ Configuration class for TOV equation solving. """
 
-    def __init__(self, central_energy=0.0, eos_file_name="", config_name="tov_solver.conf"):
-        self.__central_energy = central_energy
+    def __init__(self, central_mass_density=0.0, cutoff_density=0.0, eos_file_name="", config_name="tov_solver.conf"):
+        self.__central_mass_density = central_mass_density
+        self.__central_energy = central_mass_density * const.LIGHT_SPEED**2
+        self.__cutoff_density = cutoff_density
+
         self.__config_name = config_name
         self.__eos_file_name = eos_file_name
 
-        self.__central_mass_density = central_energy / atmc.LIGHT_SPEED**2
-
-        # TODO: estes dois campos estao errados, precisa revisar.
-        self.__a = (atmc.LIGHT_SPEED**2. /
-                    (4. * math.pi * atmc.GRAVITATIONAL_CONSTANT * self.__central_mass_density)) ** .5
+        self.__a = (const.LIGHT_SPEED**2. /
+                    (4. * math.pi * const.GRAVITATIONAL_CONSTANT * self.__central_mass_density)) ** .5
 
         self.__m_star = 4. * math.pi * self.__central_mass_density * self.__a ** 3.
+
+        # print("__cutoff_density = {}".format(self.__cutoff_density))
+        # print("a = {}".format(self.__a))
+        # print("M* = {}".format(self.__m_star))
+
+    def getCutoffDensity(self):
+        return self.__cutoff_density
 
     def getRadiusScaleFactor(self):
         return self.__a
@@ -69,6 +77,7 @@ class TOVSolver:
     __ode_steps = 20
 
     def __init__(self, tov_solver_config):
+
         self.__config = tov_solver_config
 
         # TODO: File name must be read from config file.
@@ -109,6 +118,7 @@ class TOVSolver:
                            self.__config.getEoSFileName(),
                            self.__config.getCentralEnergy(),
                            pressure_0 * self.__config.getCentralEnergy(),
+                           self.__config.getCutoffDensity(),
                            self.__config.getRadiusScaleFactor(),
                            self.__config.getMassScaleFactor())
 
@@ -120,7 +130,12 @@ class TOVSolver:
             initial_conditions=[mass_0, pressure_0],
             verbose=False)
 
-        rk4 = TOVRungeKutta(rk_parameters)
+        # print("self.__config.getCutoffDensity() = {}".format(type(self.__config.getCutoffDensity())))
+        # print("self.__config.getCentralEnergy() = {}".format(type(self.__config.getCentralEnergy())))
+
+        rk4 = TOVRungeKutta(rk_parameters,
+                            self.__config.getCutoffDensity()*const.LIGHT_SPEED**2. /
+                            self.__config.getCentralEnergy())
 
         rk4.run()
 
@@ -128,10 +143,42 @@ class TOVSolver:
 
         results = rk4.getResult()
 
-        star_mass = results.mass * self.__config.getMassScaleFactor() / atmc.SUN_MASS
+        star_mass = results.mass * self.__config.getMassScaleFactor() / const.SUN_MASS
 
         # The result is dimensionless. It must be converted to km.
-        star_radius = results.eta * self.__config.getRadiusScaleFactor() * 1e-18
+        star_radius = results.eta * self.__config.getRadiusScaleFactor() * const.LENGTH_TO_KM
+
+        # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+        # Aqui voutentar usar a receita de bolo de
+        # http://scipy-cookbook.readthedocs.org/items/CoupledSpringMassSystem.html
+        # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+        # ODE solver parameters
+        abserr = 1.0e-8
+        relerr = 1.0e-6
+        stoptime = 10.0
+        numpoints = 250
+        w0 = [mass_0, pressure_0]
+        p = []
+
+        t = [stoptime * float(i) / (numpoints - 1) for i in range(numpoints)]
+
+        wsol = integrate.odeint(tovEquations.vector_field, w0, t, args=(p,), atol=abserr, rtol=relerr)
+
+        print(wsol)
+
+        for solution in wsol:
+            plt.plot(t, solution, label='Pressure')
+
+            # plot results
+            print("Plotting...")
+            plt.grid(True)
+            plt.figure(2)
+
+
+
+        # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
 
         self.output_summary(star_mass, star_radius, 0, 0, 0, 0)
 
@@ -145,7 +192,7 @@ class TOVSolver:
         #     plt.grid(True)
         #     plt.figure(2)
 
-    def output_header(self, config_file_name, eos_file_name, epsilon_0, pressure_0, scale_radius, scale_mass):
+    def output_header(self, config_file_name, eos_file_name, epsilon_0, pressure_0, cutoff_density, scale_radius, scale_mass):
         header_format = \
             ("#---------------------------------------------------------------------------------------------\n"
              "#--------------------------------  TOV Solver - Solver Mode  ---------------------------------\n"
@@ -153,7 +200,8 @@ class TOVSolver:
              "# Config File         : {}\n"
              "# EoS File            : {}\n"
              "# EPSILON_0 (MeV/fm3) : {}\n"
-             "# PRESSURE_0          : {:05f}\n"
+             "# PRESSURE_0          : {}\n"
+             "# CUTOFF_DENSITY      : {}\n"
              "# SCALE_RADIUS        : {:0.05e}\n"
              "# SCALE_MASS          : {:0.05e}")
 
@@ -161,6 +209,7 @@ class TOVSolver:
                                    eos_file_name,
                                    epsilon_0,
                                    pressure_0,
+                                   cutoff_density,
                                    scale_radius,
                                    scale_mass))
 

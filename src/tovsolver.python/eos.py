@@ -22,13 +22,14 @@ import numpy
 
 from collections import namedtuple
 from scipy import interpolate
+import cgs_constants as const
 
 
 import matplotlib.pyplot as plt
 
 
-
-ENERGY_INDEX = 0
+ENERGY_DENSITY_INDEX = 0
+MASS_DENSITY_INDEX = 0
 PRESSURE_INDEX = 1
 BARYONIC_NUMBER_INDEX = 2
 
@@ -84,6 +85,8 @@ class EoSLoader:
         self.__filename = filename
         self.__central_energy_density = central_energy_density
 
+        # print("self.__central_energy_density = {}".format(self.__central_energy_density))
+
     def getEoSList(self):
         return self.__eosList
 
@@ -93,9 +96,10 @@ class EoSLoader:
             reader = csv.reader(f)
             for row in reader:
                 if not row[0].startswith('#'):
-                    eosValue = EoSValue(float(row[ENERGY_INDEX])/self.__central_energy_density,
-                                        float(row[PRESSURE_INDEX])/self.__central_energy_density,
-                                        float(row[BARYONIC_NUMBER_INDEX]))
+                    eosValue = EoSValue(float(
+                        row[MASS_DENSITY_INDEX])*const.LIGHT_SPEED**2./self.__central_energy_density,
+                        float(row[PRESSURE_INDEX])/self.__central_energy_density,
+                        float(row[BARYONIC_NUMBER_INDEX]))
 
                     self.__eosList.append(eosValue)
 
@@ -114,7 +118,7 @@ class EoSInterpolation:
         self.__eosList = eosList
 
         self.__energyValues = numpy.asarray(
-            [row[ENERGY_INDEX] for row in self.__eosList],  dtype=numpy.float32)
+            [row[MASS_DENSITY_INDEX] for row in self.__eosList],  dtype=numpy.float32)
 
         self.__pressureValues = numpy.asarray(
             [row[PRESSURE_INDEX] for row in self.__eosList],  dtype=numpy.float32)
