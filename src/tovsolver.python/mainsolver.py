@@ -74,7 +74,7 @@ class TOVSolver:
 
     __inferior_lim = 1e-15
     __superior_lim = 3
-    __ode_steps = 20
+    __ode_steps = 5
 
     def __init__(self, tov_solver_config):
 
@@ -147,38 +147,6 @@ class TOVSolver:
 
         # The result is dimensionless. It must be converted to km.
         star_radius = results.eta * self.__config.getRadiusScaleFactor() * const.LENGTH_TO_KM
-
-        # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-        # Aqui voutentar usar a receita de bolo de
-        # http://scipy-cookbook.readthedocs.org/items/CoupledSpringMassSystem.html
-        # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-
-        # ODE solver parameters
-        abserr = 1.0e-8
-        relerr = 1.0e-6
-        stoptime = 10.0
-        numpoints = 250
-        w0 = [mass_0, pressure_0]
-        p = []
-
-        t = [stoptime * float(i) / (numpoints - 1) for i in range(numpoints)]
-
-        wsol = integrate.odeint(tovEquations.vector_field, w0, t, args=(p,), atol=abserr, rtol=relerr)
-
-        print(wsol)
-
-        for solution in wsol:
-            plt.plot(t, solution, label='Pressure')
-
-            # plot results
-            print("Plotting...")
-            plt.grid(True)
-            plt.figure(2)
-
-
-
-        # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-
 
         self.output_summary(star_mass, star_radius, 0, 0, 0, 0)
 

@@ -55,6 +55,82 @@ class RungeKutta(object):
         """
         Runs the method based on parameters passed in the constructor.
         """
+        h = self.__h
+
+        t = self.__first_element
+
+        ws = self.__initial_conditions
+
+        N = self.__total_steps
+
+        m = len(self.__derivatives)
+
+        stop_condition_reached = False
+
+        # print("(h, t, ws, N, m)= ({}, {}, {}, {}, {})".format(h, t, ws, N, m))
+
+        try:
+
+            for i in range(1, N + 1):
+
+                # k1
+                k1 = []
+                for j in range(0, m):
+                    k1.append(h * self.__derivatives[j](t, ws))
+                # print("k1 = {}".format(k1))
+
+                # k2
+                ws_k2 = []
+                for j in range(0, m):
+                    ws_k2.append(ws[j] + 0.5 * k1[j])
+                k2 = []
+                for j in range(0, m):
+                    k2.append(h * self.__derivatives[j](t + 0.5*h, ws_k2))
+                # print("k2 = {}".format(k2))
+
+                # k3
+                ws_k3 = []
+                for j in range(0, m):
+                    ws_k3.append(ws[j] + 0.5 * k2[j])
+                k3 = []
+                for j in range(0, m):
+                    k3.append(h * self.__derivatives[j](t + 0.5*h, ws_k3))
+                # print("k3 = {}".format(k3))
+
+                # k4
+                ws_k4 = []
+                for j in range(0, m):
+                    ws_k4.append(ws[j] + k3[j])
+                k4 = []
+                for j in range(0, m):
+                    k4.append(h * self.__derivatives[j](t + h, ws_k4))
+                # print("k4 = {}".format(k4))
+
+                for j in range(0, m):
+                    ws[j] += (k1[j] + 2.*k2[j] + 2.*k3[j] + k4[j])/6.
+
+                t = self.__first_element + i * h
+
+                self.perform_calculations(t, ws)
+
+                if self.must_stop(t, ws):
+                    # print("Stop condition reached.")
+                    stop_condition_reached = True
+                    break
+        except ValueError:
+            stop_condition_reached = True
+
+        # TODO: Return interpolated functions.
+
+        return [ws, stop_condition_reached]
+
+
+
+
+    def run2(self):
+        """
+        Runs the method based on parameters passed in the constructor.
+        """
 
         m = len(self.__derivatives)
         print("m = {}".format(m))
