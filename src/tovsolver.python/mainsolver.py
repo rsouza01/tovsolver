@@ -33,7 +33,19 @@ import matplotlib.pyplot as plt
 class TOVSolverConfig:
     """ Configuration class for TOV equation solving. """
 
-    def __init__(self, central_mass_density=0.0, cutoff_density=0.0, eos_file_name="", config_name="tov_solver.conf"):
+    def __init__(self,
+                 central_mass_density=0.0,
+                 cutoff_density=0.0,
+                 eos_file_name="",
+                 config_name="tov_solver.conf",
+                 inferior_lim=1e-15,
+                 superior_lim=1000,
+                 ode_steps=1000000):
+
+        self.rk_inferior_lim = inferior_lim
+        self.rk_superior_lim = superior_lim
+        self.rk_ode_steps = ode_steps
+
         self.__central_mass_density = central_mass_density
         self.__central_energy = central_mass_density * const.LIGHT_SPEED**2
         self.__cutoff_density = cutoff_density
@@ -71,10 +83,6 @@ class TOVSolverConfig:
 
 class TOVSolver:
     """ TOV equation solver. """
-
-    __inferior_lim = 1e-15
-    __superior_lim = 3
-    __ode_steps = 5
 
     def __init__(self, tov_solver_config):
 
@@ -122,10 +130,13 @@ class TOVSolver:
                            self.__config.getRadiusScaleFactor(),
                            self.__config.getMassScaleFactor())
 
+
+
         rk_parameters = RungeKuttaParameters(
-            first_element=self.__inferior_lim,
-            last_element=self.__superior_lim,
-            rk_steps=self.__ode_steps,
+
+            first_element=self.__config.rk_inferior_lim,
+            last_element=self.__config.rk_superior_lim,
+            rk_steps=self.__config.rk_ode_steps,
             derivatives=[tovEquations.delta_M_delta_eta, tovEquations.delta_P_delta_eta],
             initial_conditions=[mass_0, pressure_0],
             verbose=False)
@@ -206,19 +217,21 @@ class TOVSolver:
             ("#---------------------------------------------------------------------------------------------\n"
              "#----------------------------  TOV Solver - Interpolation Mode  ------------------------------\n"
              "#---------------------------------------------------------------------------------------------\n"
-             "# Config File         : {}\n"
-             "# EoS File            : {}\n"
-             "# EPSILON_0 (MeV/fm3) : {}\n"
-             "# PRESSURE_0          : {:05f}\n"
+             "# Config File          : {}\n"
+             "# EoS File             : {}\n"
+             "# RHO_0 (g/cm^3)       : {:10e}\n"
+             "# EPSILON_0 (erg/cm^3) : {:10e}\n"
+             "# PRESSURE_0           : {:10e}\n"
              "#---------------------------------------------------------------------------------------------\n"
-             "# Epsilon             : {:05f}\n"
-             "# Epsilon (admin)     : {:05f}\n"
-             "# Pressure            : {:05f}\n"
-             "# Pressure (admin)    : {:05f}\n"
+             "# Epsilon              : {:10e}\n"
+             "# Epsilon (adim)       : {:10e}\n"
+             "# Pressure             : {:10e}\n"
+             "# Pressure (adim)      : {:10e}\n"
              "#---------------------------------------------------------------------------------------------\n")
 
         print(header_format.format(config_file_name,
                                    eos_file_name,
+                                   epsilon_0/const.LIGHT_SPEED**2.,
                                    epsilon_0,
                                    pressure_0,
                                    epsilon,

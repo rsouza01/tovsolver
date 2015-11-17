@@ -20,6 +20,15 @@
 import sys
 import getopt
 import ConfigParser as cp
+from collections import namedtuple
+
+
+class ConfigParameters(namedtuple('ConfigParameters',
+                                  'eos_file_name cutoff_density inferior_lim superior_lim ode_steps')):
+    """
+    Named tuple that represents the parameters in the file tov_solver.conf
+    """
+    pass
 
 
 def usage():
@@ -29,7 +38,6 @@ def usage():
 
 
 def config_section_map(config, section):
-
     dict1 = {}
     options = config.options(section)
 
@@ -93,12 +101,18 @@ def get_cl_parameters(argv):
 
 
 def get_parameters_from_conf(config_name):
-
     config = cp.ConfigParser()
     config.read(config_name)
-    file_name = config_section_map(config, "Configuration")["eos_file_name"]
 
-    cutoff_density = float(config_section_map(config, "Configuration")["cutoff_density"])
+    # EOS Parameters
+    eos_file_name = config_section_map(config, "EOS")["eos_file_name"]
+    cutoff_density = float(config_section_map(config, "EOS")["cutoff_density"])
 
-    return file_name, cutoff_density
+    # RK4 Parameters
+    inferior_lim = config_section_map(config, "RK4")["inferior_lim"]
+    superior_lim = config_section_map(config, "RK4")["superior_lim"]
+    ode_steps = config_section_map(config, "RK4")["ode_steps"]
 
+    config = ConfigParameters(eos_file_name, cutoff_density, inferior_lim, superior_lim, ode_steps)
+
+    return config

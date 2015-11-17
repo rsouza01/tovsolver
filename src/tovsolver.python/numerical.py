@@ -109,9 +109,9 @@ class RungeKutta(object):
                 for j in range(0, m):
                     ws[j] += (k1[j] + 2.*k2[j] + 2.*k3[j] + k4[j])/6.
 
-                t = self.__first_element + i * h
-
                 self.perform_calculations(t, ws)
+
+                t = self.__first_element + i * h
 
                 if self.must_stop(t, ws):
                     # print("Stop condition reached.")
