@@ -4,8 +4,8 @@ Python  part.
 
 * Get the command line parameters - OK.
 
-* Read a configuration file. - NO NEED FOR IT.
+* Read a configuration file. - OK.
 
-* The output must be equal the FORTRAN implementation in order to reuse the scripts.
+* The output must be equal the FORTRAN implementation in order to reuse the scripts - OK.
 
-* Fix the interpolation problem (function returns an array of functions instead of a function alone)
+* Fix the interpolation problem (function returns an array of functions instead of a function alone) - OK.

@@ -42,7 +42,8 @@ printlncolorERROR () {
 #MAIN PROGRAM
 _CONFIG_FILE="./tov_solver.conf"
 _OUTPUT_DIR="./output/"
-_EXECUTABLE="FORTRAN_TOV_Solver"
+# _EXECUTABLE="FORTRAN_TOV_Solver"
+_EXECUTABLE="tovsolver"
 
 USE_MESSAGE="
 Usage: $(basename "$0") [OPTIONS]

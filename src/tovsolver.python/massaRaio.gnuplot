@@ -19,7 +19,7 @@ set xlabel 'Raio' font "Helvetica,20"
 
 set ylabel 'Massa' font "Helvetica,20"
 
-#set xrange[1:12000]
+set xrange[1:20]
 #set yrange[1e-5:3]
 
 #set xrange[0:30]
