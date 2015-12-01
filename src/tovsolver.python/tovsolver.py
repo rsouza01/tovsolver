@@ -44,12 +44,13 @@ def main(argv):
 
     rho_0, config_name, epsilon, pressure = tovconfig.get_cl_parameters(argv)
 
-    config = tovconfig.get_parameters_from_conf(config_name)
+    config_file = tovconfig.get_parameters_from_conf(config_name)
 
     config = TOVSolverConfig(
         central_mass_density=rho_0,
-        eos_file_name=config.eos_file_name,
-        cutoff_density=config.cutoff_density,
+        eos_file_name=config_file.eos_file_name,
+        cutoff_density=config_file.cutoff_density,
+        transition_pressure=config_file.transition_pressure,
         config_name=config_name)
 
     tovSolver = TOVSolver(config)

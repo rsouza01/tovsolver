@@ -20,7 +20,7 @@ from numerical import RungeKutta
 from collections import namedtuple
 
 
-class TOVRK4Result(namedtuple('TOVRK4Result', 'mass pressure eta')):
+class TOVRK4Result(namedtuple('TOVRK4Result', 'mass pressure eta radius_phase_transition')):
     """
     Named tuple that represents an EoS value
     """
@@ -32,13 +32,17 @@ class TOVRungeKutta(RungeKutta):
     __MASS_INDEX = 0
     __PRESSURE_INDEX = 1
 
-    def __init__(self, rk_parameters, cutoff_density_bar=0.0):
+    def __init__(self, rk_parameters, cutoff_density_bar=0.0, transition_pressure_bar=0.0):
 
         super(TOVRungeKutta, self).__init__(rk_parameters)
         self.__star_eta = 0
-        self.__star_mass = 0
-        self.__star_pressure = 0
+        self.__star_mass = 0.
+        self.__star_pressure = 0.
+        self.__transition_radius = 0.
         self.__cutoff_density_bar = cutoff_density_bar
+        self.__transition_pressure_bar = transition_pressure_bar
+
+        self.__radius_phase_transition = 0
 
     def must_stop(self, eta, ws):
 
@@ -52,5 +56,11 @@ class TOVRungeKutta(RungeKutta):
         self.__star_mass = ws[0]
         self.__star_pressure = ws[1]
 
+        # Tests whether the transition phase was reached, in order to determine
+        # the quark core dimensionless radius.
+        if 0 < self.__transition_pressure_bar < self.__star_pressure and \
+           self.__radius_phase_transition == 0:
+            self.__radius_phase_transition = eta
+
     def getResult(self):
-        return TOVRK4Result(self.__star_mass, self.__star_pressure, self.__star_eta)
+        return TOVRK4Result(self.__star_mass, self.__star_pressure, self.__star_eta, self.__radius_phase_transition)

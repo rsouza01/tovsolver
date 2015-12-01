@@ -36,6 +36,7 @@ class TOVSolverConfig:
     def __init__(self,
                  central_mass_density=0.0,
                  cutoff_density=0.0,
+                 transition_pressure=0.0,
                  eos_file_name="",
                  config_name="tov_solver.conf",
                  inferior_lim=1e-15,
@@ -49,6 +50,7 @@ class TOVSolverConfig:
         self.__central_mass_density = central_mass_density
         self.__central_energy = central_mass_density * const.LIGHT_SPEED**2
         self.__cutoff_density = cutoff_density
+        self.__transition_pressure = transition_pressure
 
         self.__config_name = config_name
         self.__eos_file_name = eos_file_name
@@ -73,6 +75,9 @@ class TOVSolverConfig:
 
     def getCentralEnergy(self):
         return self.__central_energy
+
+    def getTransitionPressure(self):
+        return self.__transition_pressure
 
     def getConfigFileName(self):
         return self.__config_name
@@ -126,14 +131,12 @@ class TOVSolver:
                            self.__config.getEoSFileName(),
                            self.__config.getCentralEnergy(),
                            pressure_0 * self.__config.getCentralEnergy(),
+                           self.__config.getTransitionPressure(),
                            self.__config.getCutoffDensity(),
                            self.__config.getRadiusScaleFactor(),
                            self.__config.getMassScaleFactor())
 
-
-
         rk_parameters = RungeKuttaParameters(
-
             first_element=self.__config.rk_inferior_lim,
             last_element=self.__config.rk_superior_lim,
             rk_steps=self.__config.rk_ode_steps,
@@ -146,6 +149,8 @@ class TOVSolver:
 
         rk4 = TOVRungeKutta(rk_parameters,
                             self.__config.getCutoffDensity()*const.LIGHT_SPEED**2. /
+                            self.__config.getCentralEnergy(),
+                            self.__config.getTransitionPressure() /
                             self.__config.getCentralEnergy())
 
         rk4.run()
@@ -159,7 +164,10 @@ class TOVSolver:
         # The result is dimensionless. It must be converted to km.
         star_radius = results.eta * self.__config.getRadiusScaleFactor() * const.LENGTH_TO_KM
 
-        self.output_summary(star_mass, star_radius, 0, 0, 0, 0)
+        radius_phase_transition = results.radius_phase_transition * \
+                                  self.__config.getRadiusScaleFactor() * const.LENGTH_TO_KM
+
+        self.output_summary(star_mass, star_radius, 0, radius_phase_transition, 0, 0, 0)
 
         # eta = np.linspace(self.__inferior_lim, self.__superior_lim, self.__ode_steps)
         #
@@ -171,7 +179,7 @@ class TOVSolver:
         #     plt.grid(True)
         #     plt.figure(2)
 
-    def output_header(self, config_file_name, eos_file_name, epsilon_0, pressure_0, cutoff_density, scale_radius, scale_mass):
+    def output_header(self, config_file_name, eos_file_name, epsilon_0, pressure_0, transition_pressure, cutoff_density, scale_radius, scale_mass):
         header_format = \
             ("#---------------------------------------------------------------------------------------------\n"
              "#--------------------------------  TOV Solver - Solver Mode  ---------------------------------\n"
@@ -180,6 +188,7 @@ class TOVSolver:
              "# EoS File            : {}\n"
              "# EPSILON_0 (MeV/fm3) : {}\n"
              "# PRESSURE_0          : {}\n"
+             "# TRANSITION_PRESSURE : {}\n"
              "# CUTOFF_DENSITY      : {}\n"
              "# SCALE_RADIUS        : {:0.05e}\n"
              "# SCALE_MASS          : {:0.05e}")
@@ -188,17 +197,19 @@ class TOVSolver:
                                    eos_file_name,
                                    epsilon_0,
                                    pressure_0,
+                                   transition_pressure,
                                    cutoff_density,
                                    scale_radius,
                                    scale_mass))
 
-    def output_summary(self, star_mass, star_radius, baryon_number, info_entropy, diseq, complexity):
+    def output_summary(self, star_mass, star_radius, baryon_number, radius_phase_transition, info_entropy, diseq, complexity):
         summary_format = \
             ("#---------------------------------------------------------------------------------------------\n"
              "#                                            SUMMARY\n"
              "#---------------------------------------------------------------------------------------------\n"
              "#\n"
              "# Star Radius (km)            : {}\n"
+             "# Phase Transition Radius (km): {}\n"
              "#\n"
              "# Star Mass (Solar Units)     : {}\n"
              "#\n"
@@ -210,7 +221,7 @@ class TOVSolver:
              "#\n"
              "#---------------------------------------------------------------------------------------------\n")
 
-        print(summary_format.format(star_radius, star_mass, baryon_number, info_entropy, diseq, complexity))
+        print(summary_format.format(star_radius, radius_phase_transition, star_mass, baryon_number, info_entropy, diseq, complexity))
 
     def output_interpolation_header(self, config_file_name, eos_file_name, epsilon_0, pressure_0, epsilon, pressure):
         header_format = \

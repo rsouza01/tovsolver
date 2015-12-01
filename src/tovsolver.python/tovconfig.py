@@ -24,7 +24,7 @@ from collections import namedtuple
 
 
 class ConfigParameters(namedtuple('ConfigParameters',
-                                  'eos_file_name cutoff_density inferior_lim superior_lim ode_steps')):
+                                  'eos_file_name cutoff_density inferior_lim superior_lim ode_steps transition_pressure')):
     """
     Named tuple that represents the parameters in the file tov_solver.conf
     """
@@ -107,12 +107,13 @@ def get_parameters_from_conf(config_name):
     # EOS Parameters
     eos_file_name = config_section_map(config, "EOS")["eos_file_name"]
     cutoff_density = float(config_section_map(config, "EOS")["cutoff_density"])
+    transition_pressure = float(config_section_map(config, "EOS")["transition_pressure"])
 
     # RK4 Parameters
     inferior_lim = config_section_map(config, "RK4")["inferior_lim"]
     superior_lim = config_section_map(config, "RK4")["superior_lim"]
     ode_steps = config_section_map(config, "RK4")["ode_steps"]
 
-    config = ConfigParameters(eos_file_name, cutoff_density, inferior_lim, superior_lim, ode_steps)
+    config = ConfigParameters(eos_file_name, cutoff_density, inferior_lim, superior_lim, ode_steps, transition_pressure)
 
     return config
