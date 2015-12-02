@@ -23,10 +23,8 @@ from numerical import RungeKuttaParameters
 from tovnumerical import TOVRungeKutta
 import cgs_constants as const
 import math
-
 import numpy as np
 import scipy.integrate as integrate
-
 import matplotlib.pyplot as plt
 
 
@@ -42,20 +40,19 @@ class TOVSolverConfig:
                  inferior_lim=1e-15,
                  superior_lim=1000,
                  ode_steps=1000000):
-
         self.rk_inferior_lim = inferior_lim
         self.rk_superior_lim = superior_lim
         self.rk_ode_steps = ode_steps
 
         self.__central_mass_density = central_mass_density
-        self.__central_energy = central_mass_density * const.LIGHT_SPEED**2
+        self.__central_energy = central_mass_density * const.LIGHT_SPEED ** 2
         self.__cutoff_density = cutoff_density
         self.__transition_pressure = transition_pressure
 
         self.__config_name = config_name
         self.__eos_file_name = eos_file_name
 
-        self.__a = (const.LIGHT_SPEED**2. /
+        self.__a = (const.LIGHT_SPEED ** 2. /
                     (4. * math.pi * const.GRAVITATIONAL_CONSTANT * self.__central_mass_density)) ** .5
 
         self.__m_star = 4. * math.pi * self.__central_mass_density * self.__a ** 3.
@@ -94,8 +91,8 @@ class TOVSolver:
         self.__config = tov_solver_config
 
         # TODO: File name must be read from config file.
-        self.__eos = EoS(self.__config.getEoSFileName(),
-                         self.__config.getCentralEnergy(),
+        self.__eos = EoS(filename=self.__config.getEoSFileName(),
+                         central_energy_density=self.__config.getCentralEnergy(),
                          verbose=False)
 
     def evaluate(self, epsilon, pressure):
@@ -147,11 +144,10 @@ class TOVSolver:
         # print("self.__config.getCutoffDensity() = {}".format(type(self.__config.getCutoffDensity())))
         # print("self.__config.getCentralEnergy() = {}".format(type(self.__config.getCentralEnergy())))
 
-        rk4 = TOVRungeKutta(rk_parameters,
-                            self.__config.getCutoffDensity()*const.LIGHT_SPEED**2. /
-                            self.__config.getCentralEnergy(),
-                            self.__config.getTransitionPressure() /
-                            self.__config.getCentralEnergy())
+        rk4 = TOVRungeKutta(rk_parameters=rk_parameters,
+                            central_energy=self.__config.getCentralEnergy(),
+                            cutoff_density=self.__config.getCutoffDensity() * const.LIGHT_SPEED ** 2.,
+                            transition_pressure=self.__config.getTransitionPressure())
 
         rk4.run()
 
@@ -164,10 +160,12 @@ class TOVSolver:
         # The result is dimensionless. It must be converted to km.
         star_radius = results.eta * self.__config.getRadiusScaleFactor() * const.LENGTH_TO_KM
 
-        radius_phase_transition = results.radius_phase_transition * \
-                                  self.__config.getRadiusScaleFactor() * const.LENGTH_TO_KM
+        radius_phase_transition_bar = results.radius_phase_transition_bar * \
+                                      self.__config.getRadiusScaleFactor() * const.LENGTH_TO_KM
 
-        self.output_summary(star_mass, star_radius, 0, radius_phase_transition, 0, 0, 0)
+        quark_core_mass = results.mass_quark_core_bar * self.__config.getMassScaleFactor() / const.SUN_MASS
+
+        self.output_summary(star_mass, quark_core_mass, star_radius, 0, radius_phase_transition_bar, 0, 0, 0)
 
         # eta = np.linspace(self.__inferior_lim, self.__superior_lim, self.__ode_steps)
         #
@@ -179,19 +177,30 @@ class TOVSolver:
         #     plt.grid(True)
         #     plt.figure(2)
 
-    def output_header(self, config_file_name, eos_file_name, epsilon_0, pressure_0, transition_pressure, cutoff_density, scale_radius, scale_mass):
+    def output_header(self,
+                      config_file_name,
+                      eos_file_name,
+                      epsilon_0,
+                      pressure_0,
+                      transition_pressure,
+                      cutoff_density,
+                      scale_radius,
+                      scale_mass):
+
         header_format = \
-            ("#---------------------------------------------------------------------------------------------\n"
-             "#--------------------------------  TOV Solver - Solver Mode  ---------------------------------\n"
-             "#---------------------------------------------------------------------------------------------\n"
-             "# Config File         : {}\n"
-             "# EoS File            : {}\n"
-             "# EPSILON_0 (MeV/fm3) : {}\n"
-             "# PRESSURE_0          : {}\n"
-             "# TRANSITION_PRESSURE : {}\n"
-             "# CUTOFF_DENSITY      : {}\n"
-             "# SCALE_RADIUS        : {:0.05e}\n"
-             "# SCALE_MASS          : {:0.05e}")
+            ("#--------------------------------------------------------------------------------------------#\n"
+             "#--------------------------------  TOV Solver - Solver Mode  --------------------------------#\n"
+             "#--------------------------------------------------------------------------------------------#\n"
+             "#                                         PARAMETERS                                         #\n"
+             "#--------------------------------------------------------------------------------------------#\n"
+             "# CONFIG FILE            : {}\n"
+             "# EOS FILE               : {}\n"
+             "# EPSILON_0 (g/cm3)      : {}\n"
+             "# PRESSURE_0             : {}\n"
+             "# TRANSITION_PRESSURE    : {}\n"
+             "# CUTOFF_DENSITY (g/cm3) : {}\n"
+             "# SCALE_RADIUS (cm)      : {:0.05e}\n"
+             "# SCALE_MASS (g)         : {:0.05e}")
 
         print(header_format.format(config_file_name,
                                    eos_file_name,
@@ -202,50 +211,75 @@ class TOVSolver:
                                    scale_radius,
                                    scale_mass))
 
-    def output_summary(self, star_mass, star_radius, baryon_number, radius_phase_transition, info_entropy, diseq, complexity):
+    def output_summary(self,
+                       star_mass,
+                       quark_core_mass,
+                       star_radius,
+                       baryon_number,
+                       radius_phase_transition,
+                       info_entropy,
+                       diseq,
+                       complexity):
+
         summary_format = \
-            ("#---------------------------------------------------------------------------------------------\n"
-             "#                                            SUMMARY\n"
-             "#---------------------------------------------------------------------------------------------\n"
+            ("#\n"
+             "#--------------------------------------------------------------------------------------------#\n"
+             "#                                            SUMMARY                                         #\n"
+             "#--------------------------------------------------------------------------------------------#\n"
              "#\n"
-             "# Star Radius (km)            : {}\n"
-             "# Phase Transition Radius (km): {}\n"
+             "# Star Radius (km)              : {}\n"
+             "# Quark Core Radius (km)        : {}\n"
              "#\n"
-             "# Star Mass (Solar Units)     : {}\n"
+             "# Star Mass (Solar Units)       : {}\n"
+             "# Quark Core Mass (Solar Units) : {}\n"
              "#\n"
-             "# Baryon Number               : {}\n"
+             "# Baryon Number                 : {}\n"
              "#\n"
-             "# Information Entropy         : {}\n"
-             "# Disequilibrium              : {}\n"
-             "# Complexity                  : {}\n"
+             "# Information Entropy           : {}\n"
+             "# Disequilibrium                : {}\n"
+             "# Complexity                    : {}\n"
              "#\n"
-             "#---------------------------------------------------------------------------------------------\n")
+             "#--------------------------------------------------------------------------------------------#\n")
 
-        print(summary_format.format(star_radius, radius_phase_transition, star_mass, baryon_number, info_entropy, diseq, complexity))
+        print(summary_format.format(star_radius,
+                                    radius_phase_transition,
+                                    star_mass,
+                                    quark_core_mass,
+                                    baryon_number,
+                                    info_entropy,
+                                    diseq,
+                                    complexity))
 
-    def output_interpolation_header(self, config_file_name, eos_file_name, epsilon_0, pressure_0, epsilon, pressure):
+    def output_interpolation_header(self,
+                                    config_file_name,
+                                    eos_file_name,
+                                    epsilon_0,
+                                    pressure_0,
+                                    epsilon,
+                                    pressure):
+
         header_format = \
-            ("#---------------------------------------------------------------------------------------------\n"
-             "#----------------------------  TOV Solver - Interpolation Mode  ------------------------------\n"
-             "#---------------------------------------------------------------------------------------------\n"
+            ("#--------------------------------------------------------------------------------------------#\n"
+             "#----------------------------  TOV Solver - Interpolation Mode  -----------------------------#\n"
+             "#--------------------------------------------------------------------------------------------#\n"
              "# Config File          : {}\n"
              "# EoS File             : {}\n"
              "# RHO_0 (g/cm^3)       : {:10e}\n"
              "# EPSILON_0 (erg/cm^3) : {:10e}\n"
              "# PRESSURE_0           : {:10e}\n"
-             "#---------------------------------------------------------------------------------------------\n"
+             "#--------------------------------------------------------------------------------------------#\n"
              "# Epsilon              : {:10e}\n"
              "# Epsilon (adim)       : {:10e}\n"
              "# Pressure             : {:10e}\n"
              "# Pressure (adim)      : {:10e}\n"
-             "#---------------------------------------------------------------------------------------------\n")
+             "#--------------------------------------------------------------------------------------------#\n")
 
         print(header_format.format(config_file_name,
                                    eos_file_name,
-                                   epsilon_0/const.LIGHT_SPEED**2.,
+                                   epsilon_0 / const.LIGHT_SPEED ** 2.,
                                    epsilon_0,
                                    pressure_0,
                                    epsilon,
-                                   epsilon/epsilon_0,
+                                   epsilon / epsilon_0,
                                    pressure,
-                                   pressure/epsilon_0))
+                                   pressure / epsilon_0))

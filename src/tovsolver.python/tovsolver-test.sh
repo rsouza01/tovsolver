@@ -6,5 +6,5 @@ clear
 #MIT
 #./tovsolver.py --rho_0=6.6850e15 --config=./EOSs/tov_solver.conf 
 
-
-./tovsolver.py --rho_0=6.6220e15 --config=./EOSs/tov_solver.conf --epsilon=6.5600e15
+# Sly4 + MFT QCD
+./tovsolver.py --rho_0=1.39156509369e+16 --config=./EOSs/tov_solver.conf
