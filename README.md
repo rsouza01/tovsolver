@@ -3,6 +3,7 @@
 
 # TOV Solver (tovsolver)
 
+[![No Maintenance Intended](http://unmaintained.tech/badge.svg)](http://unmaintained.tech/)
 
 ## Purpose
 
