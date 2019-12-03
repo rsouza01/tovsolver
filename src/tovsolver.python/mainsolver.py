@@ -22,6 +22,8 @@ from tovequations import TOVEquations
 from numerical import RungeKuttaParameters
 from tovnumerical import TOVRungeKutta
 import cgs_constants as const
+# import atomic_constants as const
+
 import math
 import numpy as np
 import scipy.integrate as integrate

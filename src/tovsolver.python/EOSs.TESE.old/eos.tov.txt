@@ -1,0 +1,14 @@
+eos.MFT.QCD.SLY4
+
+./eos.MFT.QCD.SLY4/MFT.QCD.B_100_XI_0.0015_SLY4.CGS.csv, P_t= 6.5246251e34 erg/cm3 OK
+./eos.MFT.QCD.SLY4/MFT.QCD.B_80_XI_0.0030_SLY4.CGS.csv, P_t=  = 6.6607778e+34 erg/cm3 OK
+./eos.MFT.QCD.SLY4/MFT.QCD.B_90_XI_0.0015_SLY4.CGS.csv, P_t=  = 1.9213415e34 erg/cm3
+./eos.MFT.QCD.SLY4/MFT.QCD.B_90_XI_0.0030_SLY4.CGS.csv, P_t= 6.5246251e34 erg/cm3 <-- algo errado.
+
+Sly4
+
+./eos.sly4/sly4.dat.CGS.csv 
+
+QCD IRE
+
+./eos.qcd.ire/qcd.ire.eos.UDS.CGS.csv 

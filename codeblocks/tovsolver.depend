@@ -1,0 +1,25 @@
+# depslib dependency file v1.0
+1431438673 source:/home/rsouza/Dropbox/USP/POS/PROGRAMAS/tovsolver/src/tovsolver/global_constants.f90
+
+1431386436 source:/home/rsouza/Dropbox/USP/POS/PROGRAMAS/tovsolver/src/tovsolver/types.f90
+
+1431386436 source:/home/rsouza/Dropbox/USP/POS/PROGRAMAS/tovsolver/src/tovsolver/util.f90
+
+1431386436 source:/home/rsouza/Dropbox/USP/POS/PROGRAMAS/tovsolver/src/tovsolver/cubic_spline_module.f90
+
+1431386436 source:/home/rsouza/Dropbox/USP/POS/PROGRAMAS/tovsolver/src/tovsolver/linked_list_module.f90
+
+1431386436 source:/home/rsouza/Dropbox/USP/POS/PROGRAMAS/tovsolver/src/tovsolver/prototypes.f90
+
+1431547169 source:/home/rsouza/Dropbox/USP/POS/PROGRAMAS/tovsolver/src/tovsolver/output_module.f90
+
+1431386436 source:/home/rsouza/Dropbox/USP/POS/PROGRAMAS/tovsolver/src/tovsolver/config_module.f90
+
+1431386436 source:/home/rsouza/Dropbox/USP/POS/PROGRAMAS/tovsolver/src/tovsolver/stat_module.f90
+
+1431546734 source:/home/rsouza/Dropbox/USP/POS/PROGRAMAS/tovsolver/src/tovsolver/tov_module.f90
+
+1431386436 source:/home/rsouza/Dropbox/USP/POS/PROGRAMAS/tovsolver/src/tovsolver/solver_module.f90
+
+1431386436 source:/home/rsouza/Dropbox/USP/POS/PROGRAMAS/tovsolver/src/tovsolver/stellar_structure_solver.f90
+

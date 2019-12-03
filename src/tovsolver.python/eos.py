@@ -23,6 +23,7 @@ import numpy
 from collections import namedtuple
 from scipy import interpolate
 import cgs_constants as const
+# import atomic_constants as const
 
 
 import matplotlib.pyplot as plt

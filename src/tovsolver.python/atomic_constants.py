@@ -17,14 +17,14 @@
 # 02110-1301, USA.
 
 
-LIGHT_SPEED 			= 2.998e23
-GRAVITATIONAL_CONSTANT	= 1.44
+LIGHT_SPEED 			= 2.998e23  # cm s^{-1}
+GRAVITATIONAL_CONSTANT	= 1.18949e5 # fm^3 c^2 MeV^{-1} s^{-2}
 
 PLANCK_CONSTANT_H 		= 1
 PLANCK_CONSTANT_H_BAR 	= 1
 BOLTZMANN_CONSTANT 		= 1
 
-SUN_MASS                = 1.12e60   # MeV
+SUN_MASS                = 1.12e60   # MeV c^{-2}
 SUN_RADIUS 				= 6.959e23  # fm
 
 QUARK_UP_MASS			= 5    # MeV
