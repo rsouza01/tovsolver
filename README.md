@@ -1,12 +1,17 @@
-#TOV Solver (tovsolver)
+![Logo](logo.png)
 
 
-##Purpose
+# TOV Solver (tovsolver)
+
+[![No Maintenance Intended](http://unmaintained.tech/badge.svg)](http://unmaintained.tech/) [![MIT license](http://img.shields.io/badge/license-MIT-brightgreen.svg)](http://opensource.org/licenses/MIT)
+
+
+## Purpose
 
 The main purpose of this program is to integrate the TOV equations under
 some Equation of State.
 
-##Command Line Parameters
+## Command Line Parameters
 
 -config FILENAME : defines which config file should be read by the program.
 
@@ -22,7 +27,7 @@ The file is very simple. It must be formated in 3 columns (comma separated), in 
 
 The data must be sorted as density descending, i.e. from the bigger mass density to the smaller. In the future, one should be abble to inform the data in any sorting.
 
-##Config File Parameters
+## Config File Parameters
 
 - **diff_eq_step** : Runge-Kutta step size.
 
